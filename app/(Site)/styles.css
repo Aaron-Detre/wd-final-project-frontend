@@ -5,3 +5,44 @@
 /* .wdf-info-panel {
   width: 30%;
 } */
+
+.wd-nav-menu {
+  display: block;
+  justify-items: left;
+}
+
+.wdf-link-styling {
+  color: #116eff;
+  text-decoration: underline;
+}
+.wdf-link-styling:hover {
+  cursor: pointer;
+}
+
+.wdf-cursor-pointer:hover {
+  cursor: pointer;
+}
+.wdf-text-decoration-none {
+  text-decoration: none !important;
+}
+.wdf-header {
+  font-weight: 600;
+  font-size: x-large;
+}
+.wdf-flex-column {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+@media (min-width: 992px) {
+  .wdf-toc-offset {
+    padding-left: 140px !important;
+  }
+}
+.wdf-offcanvas-menu {
+  width: 250px !important;
+}
+.wdf-offcanvas-button {
+  width: 100px;
+}
