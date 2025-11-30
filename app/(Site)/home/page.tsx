@@ -14,7 +14,7 @@ import {
 } from "react-bootstrap";
 import { useState } from "react";
 import Link from "next/link";
-import SignInModal from "../SignInModal";
+import SignInModal from "../../No longer using/SignInModal";
 import FlexGap from "../FlexGap";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
@@ -148,6 +148,14 @@ export default function Home() {
     return starIcons;
   };
 
+  const abbreviateText = (text: string) => {
+    if (text.length >= 100) {
+      return text.slice(0, 98) + "...";
+    } else {
+      return text;
+    }
+  };
+
   return (
     <div className="wdf-anonymous-page d-lg-flex gap-4 ms-4 me-4">
       <Col>
@@ -213,7 +221,7 @@ export default function Home() {
                             <span className="me-2">{review.author}</span>
                             {displayStars(review.stars)}
                           </CardText>
-                          <CardText>{review.text}</CardText>
+                          <CardText>{abbreviateText(review.text)}</CardText>
                         </CardBody>
                       </Col>
                     </Row>

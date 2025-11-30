@@ -1,22 +1,20 @@
-import { Button, Card, Nav, NavItem, NavLink } from "react-bootstrap";
+import { Button, Nav, NavItem, NavLink } from "react-bootstrap";
 import { Path } from "./Header";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import SignInModal from "./SignInModal";
 import { useState } from "react";
 import FlexGap from "./FlexGap";
 
 export const paths: Path[] = [
-  { link: "/Home", label: "Home" },
-  { link: "/Search", label: "Search" },
-  { link: "/Recipes", label: "Recipes" },
-  { link: "/Profile", label: "Profile" },
-  { link: "/Settings", label: "Settings" },
+  { link: "/home", label: "Home" },
+  { link: "/search", label: "Search" },
+  { link: "/recipes", label: "Recipes" },
+  { link: "/profile", label: "Profile" },
+  { link: "/settings", label: "Settings" },
 ];
 
 export default function TOC() {
   const pathname = usePathname();
-  const [show, setShow] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   return (
     <div className="position-fixed bottom-0 top-0 d-none d-md-block z-2">
@@ -38,17 +36,20 @@ export default function TOC() {
         </Nav>
         <FlexGap />
         <Button onClick={() => setSignedIn(!signedIn)}>Toggle</Button>
-        {!signedIn && (
+        {signedIn ? (
+          <Button href="/" variant="secondary" className="mt-2 mb-3">
+            Sign Out
+          </Button>
+        ) : (
           <>
-            <Button onClick={() => setShow(true)} className="mt-2">
+            <Button href="/login" variant="secondary" className="mt-2">
               Sign In
             </Button>
-            <Button href="/Account/SignUp" className="mt-2 mb-3">
+            <Button href="/register" variant="secondary" className="mt-2 mb-3">
               Sign Up
             </Button>
           </>
         )}
-        <SignInModal showSignIn={show} setShowSignIn={setShow} />
       </div>
     </div>
   );

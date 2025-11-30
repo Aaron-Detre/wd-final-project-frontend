@@ -6,7 +6,7 @@ import { Path } from "./Header";
 import { paths } from "./TOC";
 import FlexGap from "./FlexGap";
 import { useState } from "react";
-import SignInModal from "./SignInModal";
+import SignInModal from "../No longer using/SignInModal";
 
 export default function TOCOffcanvas({
   show,
@@ -48,16 +48,22 @@ export default function TOCOffcanvas({
         >
           Toggle
         </Button>
-        {!signedIn && (
+        {signedIn ? (
+          <Button href="/" variant="secondary" className="mt-2 mb-3">
+            Sign Out
+          </Button>
+        ) : (
           <>
             <Button
-              onClick={() => setShowModal(true)}
+              href="/login"
+              variant="secondary"
               className="mt-2 wdf-offcanvas-button"
             >
               Sign In
             </Button>
             <Button
-              href="/Account/SignUp"
+              href="/register"
+              variant="secondary"
               className="mt-2 mb-3 wdf-offcanvas-button"
             >
               Sign Up

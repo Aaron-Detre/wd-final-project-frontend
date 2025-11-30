@@ -46,3 +46,6 @@
 .wdf-offcanvas-button {
   width: 100px;
 }
+.wdf-full-height {
+  height: 100vh;
+}

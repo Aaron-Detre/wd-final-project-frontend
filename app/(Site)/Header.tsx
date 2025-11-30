@@ -36,10 +36,10 @@ export default function Header({
         <FlexGap />
         {signedIn ? (
           <>
-            <Link href="/Settings">
+            <Link href="/settings">
               <MdOutlineSettings className="fs-1 m-3 me-2 text-black" />
             </Link>
-            <Link href="/Profile">
+            <Link href="/profile">
               <RiAccountCircleLine className="fs-1 m-3 text-black" />
             </Link>
           </>

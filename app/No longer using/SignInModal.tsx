@@ -20,13 +20,16 @@ export default function SignInModal({
           <FormControl id="username-entry" type="text" className="mb-3" />
           <FormLabel htmlFor="password-entry">Password</FormLabel>
           <FormControl id="username-entry" type="password" className="mb-2" />
-          <Link href="/Account/SignUp">create account</Link>
+          <Link href="/Account/SignUp" onClick={handleClose}>
+            create account
+          </Link>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          //TODO: only navigate if correct login info
+          <Button href="/profile" variant="primary" onClick={handleClose}>
             Sign In
           </Button>
         </Modal.Footer>

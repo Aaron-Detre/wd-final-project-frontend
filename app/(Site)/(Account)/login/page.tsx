@@ -26,7 +26,7 @@ export default function SignUp() {
           <Link className="btn btn-secondary me-2" href="/">
             Cancel
           </Link>
-          <Link className="btn btn-primary" href="/Account/Profile">
+          <Link className="btn btn-primary" href="/profile">
             Sign Up
           </Link>
         </CardFooter>
