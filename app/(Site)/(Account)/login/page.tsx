@@ -8,7 +8,7 @@ import {
   FormControl,
   FormLabel,
 } from "react-bootstrap";
-import FlexGap from "../../FlexGap";
+import FlexGap from "../../UtilClasses/FlexGap";
 
 export default function SignUp() {
   return (

@@ -1,15 +1,13 @@
 "use client";
 import { RiAccountCircleLine } from "react-icons/ri";
 import { AiOutlineMenu } from "react-icons/ai";
-import FlexGap from "./FlexGap";
+import FlexGap from "../(Site)/UtilClasses/FlexGap";
 import { useState } from "react";
 import "./styles.css";
-import TOCOffcanvas from "./TOCOffcanvas";
+import TOCOffcanvas from "../(Site)/TOC/TOCOffcanvas";
 import { MdOutlineSettings } from "react-icons/md";
 import Link from "next/link";
 import { Button } from "react-bootstrap";
-
-export type Path = { link: string; label: string };
 
 export default function Header({
   title,

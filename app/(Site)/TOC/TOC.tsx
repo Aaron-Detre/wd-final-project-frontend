@@ -1,10 +1,10 @@
 import { Button, Nav, NavItem, NavLink } from "react-bootstrap";
-import { Path } from "./Header";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import FlexGap from "./FlexGap";
+import FlexGap from "../UtilClasses/FlexGap";
 
+export type Path = { link: string; label: string };
 export const paths: Path[] = [
   { link: "/home", label: "Home" },
   { link: "/search", label: "Search" },

@@ -2,9 +2,9 @@
 import { ReactNode, useState } from "react";
 import "./styles.css";
 import { Col, Container, Row } from "react-bootstrap";
-import TOC from "./TOC";
+import TOC from "./TOC/TOC";
 import { AiOutlineMenu } from "react-icons/ai";
-import TOCOffcanvas from "./TOCOffcanvas";
+import TOCOffcanvas from "./TOC/TOCOffcanvas";
 import { usePathname } from "next/navigation";
 
 export default function Layout({

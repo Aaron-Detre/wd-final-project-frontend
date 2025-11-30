@@ -15,7 +15,7 @@ import {
 import { useState } from "react";
 import Link from "next/link";
 import SignInModal from "../../No longer using/SignInModal";
-import FlexGap from "../FlexGap";
+import FlexGap from "../UtilClasses/FlexGap";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
 export default function Home() {

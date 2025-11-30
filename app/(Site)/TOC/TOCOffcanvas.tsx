@@ -2,11 +2,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button, Nav, NavItem, NavLink, Offcanvas } from "react-bootstrap";
-import { Path } from "./Header";
-import { paths } from "./TOC";
-import FlexGap from "./FlexGap";
+import { Path, paths } from "./TOC";
+import FlexGap from "../UtilClasses/FlexGap";
 import { useState } from "react";
-import SignInModal from "../No longer using/SignInModal";
+import SignInModal from "../../No longer using/SignInModal";
 
 export default function TOCOffcanvas({
   show,
