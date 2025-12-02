@@ -9,3 +9,14 @@ export const profile = async () => {
   const response = await axiosWithCredentials.post(`${USERS_API}/profile`);
   return response.data;
 };
+export const signIn = async (credentials: any) => {
+  const response = await axiosWithCredentials.post(
+    `${USERS_API}/signin`,
+    credentials
+  );
+  return response.data;
+};
+export const signUp = async (user: any) => {
+  const response = await axiosWithCredentials.post(`${USERS_API}/signup`, user);
+  return response.data;
+};

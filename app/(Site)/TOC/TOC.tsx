@@ -10,7 +10,7 @@ export const paths: Path[] = [
   { link: "/search", label: "Search" },
   { link: "/recipes", label: "Recipes" },
   { link: "/profile", label: "Profile" },
-  // { link: "/profile/settings", label: "Settings" },
+  { link: "/settings", label: "Settings" },
 ];
 
 export default function TOC() {

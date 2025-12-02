@@ -28,7 +28,6 @@ export default function SignInModal({
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          //TODO: only navigate if correct login info
           <Button href="/profile" variant="primary" onClick={handleClose}>
             Sign In
           </Button>

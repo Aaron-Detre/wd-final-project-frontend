@@ -1,5 +1,7 @@
+"use client";
 import Link from "next/link";
 import {
+  Button,
   Card,
   CardBody,
   CardFooter,
@@ -8,26 +10,58 @@ import {
   FormLabel,
 } from "react-bootstrap";
 import FlexGap from "../../UtilClasses/FlexGap";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "../reducer";
+import { redirect } from "next/navigation";
+import * as client from "../client";
 
 export default function SignIn() {
+  const [credentials, setCredentials] = useState<{
+    username: string;
+    password: string;
+  }>({ username: "", password: "" });
+  const dispatch = useDispatch();
+  const signIn = async () => {
+    const user = await client.signIn(credentials);
+    if (user) {
+      dispatch(setCurrentUser(user));
+      redirect("/"); //TODO: home or profile?
+    }
+  };
+  const usernameChanges = (e: any) => {
+    setCredentials({ ...credentials, username: e.target.value });
+  };
+  const passwordChanges = (e: any) => {
+    setCredentials({ ...credentials, password: e.target.value });
+  };
   return (
     <div className="d-flex justify-content-center">
       <Card className="w-25 mt-5">
         <CardHeader>Sign In</CardHeader>
         <CardBody>
           <FormLabel htmlFor="username-entry">Username</FormLabel>
-          <FormControl id="username-entry" type="text" className="mb-3" />
+          <FormControl
+            id="username-entry"
+            type="text"
+            className="mb-3"
+            onChange={usernameChanges}
+          />
           <FormLabel htmlFor="password-entry">Password</FormLabel>
-          <FormControl id="username-entry" type="password" />
+          <FormControl
+            id="username-entry"
+            type="password"
+            onChange={passwordChanges}
+          />
         </CardBody>
         <CardFooter className="d-flex">
           <FlexGap />
           <Link className="btn btn-secondary me-2" href="/">
             Cancel
           </Link>
-          <Link className="btn btn-primary" href="/profile">
+          <Button variant="primary" onClick={signIn}>
             Sign In
-          </Link>
+          </Button>
         </CardFooter>
       </Card>
     </div>

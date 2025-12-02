@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentUser } from "../../reducer";
+import { setCurrentUser } from "../reducer";
 import { redirect } from "next/navigation";
 
 //TODO: duplication -- copied from sign up page
@@ -18,7 +18,7 @@ export default function Settings() {
   const fetchProfile = () => {
     currentUser
       ? setUpdatedUser(currentUser)
-      : redirect("/profile/settings/restricted");
+      : redirect("/settings/restricted");
   };
   useEffect(() => {
     fetchProfile();
