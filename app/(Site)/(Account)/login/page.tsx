@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  Button,
   Card,
   CardBody,
   CardFooter,
@@ -10,11 +9,11 @@ import {
 } from "react-bootstrap";
 import FlexGap from "../../UtilClasses/FlexGap";
 
-export default function SignUp() {
+export default function SignIn() {
   return (
     <div className="d-flex justify-content-center">
       <Card className="w-25 mt-5">
-        <CardHeader>Sign Up</CardHeader>
+        <CardHeader>Sign In</CardHeader>
         <CardBody>
           <FormLabel htmlFor="username-entry">Username</FormLabel>
           <FormControl id="username-entry" type="text" className="mb-3" />
@@ -27,7 +26,7 @@ export default function SignUp() {
             Cancel
           </Link>
           <Link className="btn btn-primary" href="/profile">
-            Sign Up
+            Sign In
           </Link>
         </CardFooter>
       </Card>

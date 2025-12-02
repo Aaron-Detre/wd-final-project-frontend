@@ -12,127 +12,102 @@ import {
   ListGroupItem,
   Row,
 } from "react-bootstrap";
-import { useState } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import SignInModal from "../../No longer using/SignInModal";
 import FlexGap from "../UtilClasses/FlexGap";
 import { FaRegStar, FaStar } from "react-icons/fa";
+import { Recipe, Review, User } from "../UtilClasses/Types";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
-  type Recipe = {
-    _id: string;
-    title: string;
-    img: string;
-    link: string;
-    author: string;
+  const genericRecipe: Recipe = {
+    _id: uuidv4(),
+    recipeTitle: "Default",
+    recipeAuthor: "Default",
+    datePosted: new Date(),
   };
-  type Review = {
-    _id: string;
-    title: string;
-    stars: number;
-    recipe: Recipe;
-    author: string;
-    link: string;
-    text: string;
+  const genericUser: User = {
+    _id: uuidv4(),
+    username: "Default",
+    password: "Default",
+    role: "BOTH",
   };
+  const genericDate = new Date();
   const userRecipes: Recipe[] = [
     {
       _id: "1",
-      title: "Example Recipe 1",
+      recipeTitle: "Example Recipe 1",
       img: "/images/test.jpg",
-      link: "/",
-      author: "Aaron Detre",
+      recipeAuthor: "Aaron Detre",
+      datePosted: genericDate,
     },
     {
       _id: "2",
-      title: "Example Recipe 2",
+      recipeTitle: "Example Recipe 2",
       img: "/images/test.jpg",
-      link: "/",
-      author: "Aaron Detre",
+      recipeAuthor: "Aaron Detre",
+      datePosted: genericDate,
     },
     {
       _id: "3",
-      title: "Example Recipe 3",
+      recipeTitle: "Example Recipe 3",
       img: "/images/test.jpg",
-      link: "/",
-      author: "Aaron Detre",
+      recipeAuthor: "Aaron Detre",
+      datePosted: genericDate,
     },
     {
       _id: "4",
-      title: "Example Recipe 4",
+      recipeTitle: "Example Recipe 4",
       img: "/images/test.jpg",
-      link: "/",
-      author: "Aaron Detre",
+      recipeAuthor: "Aaron Detre",
+      datePosted: genericDate,
     },
     {
       _id: "5",
-      title: "Example Recipe 5",
+      recipeTitle: "Example Recipe 5",
       img: "/images/test.jpg",
-      link: "/",
-      author: "Aaron Detre",
+      recipeAuthor: "Aaron Detre",
+      datePosted: genericDate,
     },
   ];
 
   const recentReviews: Review[] = [
     {
       _id: "1",
-      recipe: {
-        _id: "3",
-        title: "Example Recipe 3",
-        img: "/images/test.jpg",
-        link: "/",
-        author: "Aaron Detre",
-      },
-      title: "Gross",
-      author: "Aaron Detre",
-      link: "/",
+      recipe: userRecipes.at(2) ?? genericRecipe,
+      reviewTitle: "Gross",
+      reviewAuthor: genericUser,
       stars: 0,
       text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet magna vestibulum, congue tellus in, semper felis. Curabitur facilisis hendrerit magna, eu sagittis",
+      datePosted: genericDate,
     },
     {
       _id: "2",
-      recipe: {
-        _id: "1",
-        title: "Example Recipe 1",
-        img: "/images/test.jpg",
-        link: "/",
-        author: "Aaron Detre",
-      },
-      title: "Pretty good recipe",
-      author: "Aaron Detre",
-      link: "/",
+      recipe: userRecipes.at(0) ?? genericRecipe,
+      reviewTitle: "Pretty good recipe",
+      reviewAuthor: genericUser,
       stars: 4,
       text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet magna vestibulum, congue tellus in, semper felis. Curabitur facilisis hendrerit magna, eu sagittis",
+      datePosted: genericDate,
     },
     {
       _id: "3",
-      recipe: {
-        _id: "5",
-        title: "Example Recipe 5",
-        img: "/images/test.jpg",
-        link: "/",
-        author: "Aaron Detre",
-      },
-      title: "Fine",
-      author: "Aaron Detre",
-      link: "/",
+      recipe: userRecipes.at(4) ?? genericRecipe,
+      reviewTitle: "Fine",
+      reviewAuthor: genericUser,
       stars: 3,
       text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet magna vestibulum, congue tellus in, semper felis. Curabitur facilisis hendrerit magna, eu sagittis",
+      datePosted: genericDate,
     },
     {
       _id: "4",
-      recipe: {
-        _id: "1",
-        title: "Example Recipe 1",
-        img: "/images/test.jpg",
-        link: "/",
-        author: "Aaron Detre",
-      },
-      title: "good recipe",
-      author: "Joe",
-      link: "/",
+      recipe: userRecipes.at(0) ?? genericRecipe,
+      reviewTitle: "good recipe",
+      reviewAuthor: genericUser,
       stars: 5,
       text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet magna vestibulum, congue tellus in, semper ",
+      datePosted: genericDate,
     },
   ];
 
@@ -153,6 +128,14 @@ export default function Home() {
       return text.slice(0, 98) + "...";
     } else {
       return text;
+    }
+  };
+
+  const authorString = (user: User | string): string => {
+    if (typeof user === "string") {
+      return user;
+    } else {
+      return user.username;
     }
   };
 
@@ -177,12 +160,14 @@ export default function Home() {
                         <CardBody>
                           <CardTitle
                             as={Link}
-                            href={recipe.link}
+                            href={`details/${recipe._id}`}
                             className="wdf-header"
                           >
-                            {recipe.title}
+                            {recipe.recipeTitle}
                           </CardTitle>
-                          <CardText>By {recipe.author}</CardText>
+                          <CardText>
+                            By {authorString(recipe.recipeAuthor)}
+                          </CardText>
                         </CardBody>
                       </Col>
                     </Row>
@@ -212,13 +197,15 @@ export default function Home() {
                         <CardBody>
                           <CardTitle
                             as={Link}
-                            href={review.link}
+                            href={`details/${review.recipe._id}/review/${review._id}`}
                             className="wdf-header"
                           >
-                            {review.recipe.title}
+                            {review.recipe.recipeTitle}
                           </CardTitle>
                           <CardText className="d-flex align-items-center">
-                            <span className="me-2">{review.author}</span>
+                            <span className="me-2">
+                              {review.reviewAuthor.username}
+                            </span>
                             {displayStars(review.stars)}
                           </CardText>
                           <CardText>{abbreviateText(review.text)}</CardText>

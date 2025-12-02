@@ -20,9 +20,7 @@ export default function TOCOffcanvas({
   return (
     <Offcanvas show={show} onHide={handleClose} className="wdf-offcanvas-menu">
       <Offcanvas.Header closeButton>
-        <Link href="/" className="text-decoration-none text-black">
-          <h3>Recipe Site</h3>
-        </Link>
+        <h3>Recipe Site</h3>
       </Offcanvas.Header>
       <Offcanvas.Body className="wdf-flex-column">
         <Nav variant="pills" className="wd-nav-menu">
@@ -34,6 +32,7 @@ export default function TOCOffcanvas({
                 }`}
                 as={Link}
                 href={path.link}
+                onClick={handleClose}
               >
                 {path.label}
               </NavLink>

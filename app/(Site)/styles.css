@@ -37,7 +37,7 @@
 
 @media (min-width: 992px) {
   .wdf-toc-offset {
-    padding-left: 140px !important;
+    padding-left: 180px !important;
   }
 }
 .wdf-offcanvas-menu {
@@ -48,4 +48,18 @@
 }
 .wdf-full-height {
   height: 100vh;
+}
+
+.wdf-debug-border {
+  border: 5px solid black;
+}
+
+.wdf-breadcrumb-link {
+  text-decoration: none !important;
+  color: black;
+}
+
+.wdf-breadcrumb-link:hover {
+  cursor: pointer;
+  color: rgb(95, 95, 95);
 }

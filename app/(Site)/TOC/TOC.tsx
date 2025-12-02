@@ -10,7 +10,7 @@ export const paths: Path[] = [
   { link: "/search", label: "Search" },
   { link: "/recipes", label: "Recipes" },
   { link: "/profile", label: "Profile" },
-  { link: "/settings", label: "Settings" },
+  // { link: "/profile/settings", label: "Settings" },
 ];
 
 export default function TOC() {
@@ -19,12 +19,15 @@ export default function TOC() {
   return (
     <div className="position-fixed bottom-0 top-0 d-none d-md-block z-2">
       <div className="wdf-flex-column">
+        <h3 className="m-3 mb-4">Recipe Site</h3>
         <Nav variant="pills" className="wd-nav-menu ">
           {paths.map((path: Path) => (
             <NavItem key={path.label}>
               <NavLink
                 className={`bg-white text-center fs-2 ${
-                  pathname.includes(path.label) ? "text-danger" : "text-black"
+                  pathname.includes(path.label.toLowerCase())
+                    ? "text-danger"
+                    : "text-black"
                 }`}
                 as={Link}
                 href={path.link}
