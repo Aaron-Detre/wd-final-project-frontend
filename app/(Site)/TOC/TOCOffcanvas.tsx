@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button, Nav, NavItem, NavLink, Offcanvas } from "react-bootstrap";
+import { Nav, NavItem, NavLink, Offcanvas } from "react-bootstrap";
 import { Path, paths } from "./TOC";
 import FlexGap from "../UtilClasses/FlexGap";
 import { useState } from "react";
 import SignInModal from "../../No longer using/SignInModal";
+import AccountButtons from "./AccountButtons";
 
 export default function TOCOffcanvas({
   show,
@@ -16,7 +17,7 @@ export default function TOCOffcanvas({
 }) {
   const pathname = usePathname();
   const [showModal, setShowModal] = useState(false);
-  const [signedIn, setSignedIn] = useState(false);
+
   return (
     <Offcanvas show={show} onHide={handleClose} className="wdf-offcanvas-menu">
       <Offcanvas.Header closeButton>
@@ -28,7 +29,9 @@ export default function TOCOffcanvas({
             <NavItem key={path.label}>
               <NavLink
                 className={`bg-white text-center fs-2 ${
-                  pathname.includes(path.label) ? "text-danger" : "text-black"
+                  pathname.includes(path.label.toLowerCase())
+                    ? "text-danger"
+                    : "text-black"
                 }`}
                 as={Link}
                 href={path.link}
@@ -40,34 +43,7 @@ export default function TOCOffcanvas({
           ))}
         </Nav>
         <FlexGap />
-        <Button
-          onClick={() => setSignedIn(!signedIn)}
-          className="wdf-offcanvas-button"
-        >
-          Toggle
-        </Button>
-        {signedIn ? (
-          <Button href="/" variant="secondary" className="mt-2 mb-3">
-            Sign Out
-          </Button>
-        ) : (
-          <>
-            <Button
-              href="/login"
-              variant="secondary"
-              className="mt-2 wdf-offcanvas-button"
-            >
-              Sign In
-            </Button>
-            <Button
-              href="/register"
-              variant="secondary"
-              className="mt-2 mb-3 wdf-offcanvas-button"
-            >
-              Sign Up
-            </Button>
-          </>
-        )}
+        <AccountButtons className="wdf-offcanvas-button" />
       </Offcanvas.Body>
       <SignInModal showSignIn={showModal} setShowSignIn={setShowModal} />
     </Offcanvas>

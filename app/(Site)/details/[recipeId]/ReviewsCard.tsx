@@ -1,0 +1,104 @@
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardBody,
+  CardText,
+  CardTitle,
+  Col,
+  ListGroup,
+  ListGroupItem,
+  Row,
+} from "react-bootstrap";
+import { useParams } from "next/navigation";
+
+import * as localRecipeClient from "../../Clients/localRecipeClient";
+import * as recipeClient from "../../Clients/recipeClient";
+import * as reviewClient from "../../Clients/reviewClient";
+import Link from "next/link";
+import { Review } from "../../UtilClasses/Types";
+import displayStars from "../../UtilClasses/DisplayStars";
+
+export default function ReviewsCard({
+  isReviewOfLocalRecipe,
+}: {
+  isReviewOfLocalRecipe: boolean;
+}) {
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [recipe, setRecipe] = useState<any>(null);
+  const { recipeId } = useParams();
+
+  const fetchAllReviewsForRecipe = async (rid: string) => {
+    const reviewsForRecipe = isReviewOfLocalRecipe
+      ? await reviewClient.getAllReviewsForLocalRecipe(rid)
+      : await reviewClient.getAllReviewsForApiRecipe(rid);
+    setReviews(reviewsForRecipe);
+  };
+  const fetchReviewedRecipe = async (rid: string) => {
+    const reviewedRecipe = isReviewOfLocalRecipe
+      ? await localRecipeClient.getRecipeById(rid)
+      : await recipeClient.getRecipeById(rid);
+    setRecipe(reviewedRecipe);
+  };
+  useEffect(() => {
+    if (recipeId) {
+      fetchAllReviewsForRecipe(recipeId as string);
+      fetchReviewedRecipe(recipeId as string);
+    }
+  }, [recipeId]);
+
+  const abbreviateText = (text: string) => {
+    if (text && text.length >= 230) {
+      return text.slice(0, 228) + "...";
+    } else {
+      return text;
+    }
+  };
+
+  return (
+    <Card className="shadow">
+      <Card.Header>User Reviews</Card.Header>
+      <Card.Body>
+        {reviews.length > 0 ? (
+          <ListGroup>
+            {reviews.map((review: Review) => (
+              <ListGroupItem
+                key={review._id}
+                className="d-flex align-items-center wdf-cursor-pointer"
+              >
+                <Card className="w-100">
+                  <Row className="no-gutters">
+                    <Col>
+                      <CardBody>
+                        <CardTitle
+                          as={Link}
+                          href={`/details/${recipeId}/${
+                            review.apiRecipeId ? "api" : "local"
+                          }/review/${review._id}`}
+                          className="wdf-header"
+                        >
+                          {review.reviewTitle}
+                        </CardTitle>
+                        <CardText className="d-flex align-items-baseline">
+                          {displayStars(review.stars)}
+                          <span className="ms-3 fs-5 fw-3">
+                            By{" "}
+                            <Link href={`/profile/${review.reviewAuthor._id}`}>
+                              {review.reviewAuthor.username}
+                            </Link>
+                          </span>
+                        </CardText>
+                        <CardText>{abbreviateText(review.text)}</CardText>
+                      </CardBody>
+                    </Col>
+                  </Row>
+                </Card>
+              </ListGroupItem>
+            ))}
+          </ListGroup>
+        ) : (
+          <h3>No user reviews yet...</h3>
+        )}
+      </Card.Body>
+    </Card>
+  );
+}

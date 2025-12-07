@@ -17,14 +17,20 @@ export default function Layout({
   const handleOpenMenu = () => setshowOffcanvas(true);
   const handleCloseMenu = () => setshowOffcanvas(false);
   const getTitle = (pathTokens: string[]): string => {
-    const lastPathToken = getLastPathToken(pathTokens);
-    return lastPathToken
-      ? lastPathToken.charAt(0).toUpperCase() + lastPathToken.slice(1)
-      : "";
+    const firstPathToken = pathTokens.at(1);
+    const lastPathToken = pathTokens.at(pathTokens.length - 1);
+    if (firstPathToken === "details") {
+      if (pathTokens.at(pathTokens.length - 2) === "review") {
+        return "Review";
+      } else {
+        return "Recipe Details";
+      }
+    } else {
+      return lastPathToken
+        ? lastPathToken.charAt(0).toUpperCase() + lastPathToken.slice(1)
+        : "";
+    }
   };
-  const getLastPathToken = (pathTokens: string[]): string | undefined =>
-    pathTokens.at(pathTokens.length - 1);
-
   const pathTokens = usePathname().split("/");
   const title = getTitle(pathTokens);
 

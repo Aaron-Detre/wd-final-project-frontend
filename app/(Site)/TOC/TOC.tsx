@@ -3,19 +3,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import FlexGap from "../UtilClasses/FlexGap";
+import { RootState } from "../store";
+import { useSelector } from "react-redux";
+import AccountButtons from "./AccountButtons";
 
 export type Path = { link: string; label: string };
 export const paths: Path[] = [
   { link: "/home", label: "Home" },
   { link: "/search", label: "Search" },
-  { link: "/recipes", label: "Recipes" },
+  { link: "/details", label: "Details" },
   { link: "/profile", label: "Profile" },
   { link: "/settings", label: "Settings" },
 ];
 
 export default function TOC() {
+  const { currentUser } = useSelector((state: RootState) => state.account);
   const pathname = usePathname();
-  const [signedIn, setSignedIn] = useState(false);
   return (
     <div className="position-fixed bottom-0 top-0 d-none d-md-block z-2">
       <div className="wdf-flex-column">
@@ -38,21 +41,7 @@ export default function TOC() {
           ))}
         </Nav>
         <FlexGap />
-        <Button onClick={() => setSignedIn(!signedIn)}>Toggle</Button>
-        {signedIn ? (
-          <Button href="/" variant="secondary" className="mt-2 mb-3">
-            Sign Out
-          </Button>
-        ) : (
-          <>
-            <Button href="/login" variant="secondary" className="mt-2">
-              Sign In
-            </Button>
-            <Button href="/register" variant="secondary" className="mt-2 mb-3">
-              Sign Up
-            </Button>
-          </>
-        )}
+        <AccountButtons className="wdf-toc-button" />
       </div>
     </div>
   );

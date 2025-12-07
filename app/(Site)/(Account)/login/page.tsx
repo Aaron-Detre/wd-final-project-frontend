@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import { redirect } from "next/navigation";
-import * as client from "../client";
+import * as userClient from "../../Clients/userClient";
 
 export default function SignIn() {
   const [credentials, setCredentials] = useState<{
@@ -23,7 +23,7 @@ export default function SignIn() {
   }>({ username: "", password: "" });
   const dispatch = useDispatch();
   const signIn = async () => {
-    const user = await client.signIn(credentials);
+    const user = await userClient.signIn(credentials);
     if (user) {
       dispatch(setCurrentUser(user));
       redirect("/"); //TODO: home or profile?
@@ -35,6 +35,8 @@ export default function SignIn() {
   const passwordChanges = (e: any) => {
     setCredentials({ ...credentials, password: e.target.value });
   };
+  const handleKeyDown = (e: any) => e.key === "Enter" && signIn();
+
   return (
     <div className="d-flex justify-content-center">
       <Card className="w-25 mt-5">
@@ -46,12 +48,14 @@ export default function SignIn() {
             type="text"
             className="mb-3"
             onChange={usernameChanges}
+            onKeyDown={handleKeyDown}
           />
           <FormLabel htmlFor="password-entry">Password</FormLabel>
           <FormControl
             id="username-entry"
             type="password"
             onChange={passwordChanges}
+            onKeyDown={handleKeyDown}
           />
         </CardBody>
         <CardFooter className="d-flex">

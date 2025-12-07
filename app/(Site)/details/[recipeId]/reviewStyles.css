@@ -1,0 +1,39 @@
+.wdf-review {
+  margin: 2%;
+}
+
+.wdf-review-content {
+  width: 100%;
+}
+
+.wdf-review-recipe-card {
+  float: right;
+  width: 35%;
+  margin-left: 3%;
+  margin-bottom: 5%;
+}
+
+.wdf-review-recipe-image {
+  /* border-bottom: 5px solid black; */
+}
+
+.wdf-review-recipe-title {
+  @media (min-width: 1050px) {
+    font-size: x-large;
+  }
+  @media (max-width: 600px) {
+    font-size: medium;
+  }
+}
+
+.wdf-review-author {
+  font-size: x-large;
+  font-weight: 500;
+  margin-right: 3%;
+}
+.wdf-review-text {
+  margin-top: 3%;
+}
+.wdf-review-back-button {
+  margin-top: 5px;
+}

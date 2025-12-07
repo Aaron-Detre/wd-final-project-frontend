@@ -63,3 +63,9 @@
   cursor: pointer;
   color: rgb(95, 95, 95);
 }
+.wdf-text-dark-gray {
+  color: rgb(45, 45, 45);
+}
+.wdf-border-light {
+  border: 2px solid gray;
+}

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as client from "./client";
+import * as userClient from "../Clients/userClient";
 import { useEffect, useState } from "react";
 import { setCurrentUser } from "./reducer";
 import { useDispatch } from "react-redux";
@@ -8,7 +8,7 @@ export default function Session({ children }: { children: any }) {
   const dispatch = useDispatch();
   const fetchProfile = async () => {
     try {
-      const currentUser = await client.profile();
+      const currentUser = await userClient.profile();
       dispatch(setCurrentUser(currentUser));
     } catch (err: any) {
       console.error(err);

@@ -6,122 +6,69 @@ import {
   CardText,
   CardTitle,
   Col,
-  Container,
-  Image,
   ListGroup,
   ListGroupItem,
   Row,
 } from "react-bootstrap";
-import { use, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import SignInModal from "../../No longer using/SignInModal";
-import FlexGap from "../UtilClasses/FlexGap";
 import { FaRegStar, FaStar } from "react-icons/fa";
-import { Recipe, Review, User } from "../UtilClasses/Types";
-import { v4 as uuidv4 } from "uuid";
+import { RootState } from "../store";
+import { useSelector } from "react-redux";
+import * as localRecipeClient from "../Clients/localRecipeClient";
+import * as reviewClient from "../Clients/reviewClient";
+import displayStars from "../UtilClasses/DisplayStars";
 
 export default function Home() {
-  const genericRecipe: Recipe = {
-    _id: uuidv4(),
-    recipeTitle: "Default",
-    recipeAuthor: "Default",
-    datePosted: new Date(),
-  };
-  const genericUser: User = {
-    _id: uuidv4(),
-    username: "Default",
-    password: "Default",
-    role: "BOTH",
-  };
-  const genericDate = new Date();
-  const userRecipes: Recipe[] = [
-    {
-      _id: "1",
-      recipeTitle: "Example Recipe 1",
-      img: "/images/test.jpg",
-      recipeAuthor: "Aaron Detre",
-      datePosted: genericDate,
-    },
-    {
-      _id: "2",
-      recipeTitle: "Example Recipe 2",
-      img: "/images/test.jpg",
-      recipeAuthor: "Aaron Detre",
-      datePosted: genericDate,
-    },
-    {
-      _id: "3",
-      recipeTitle: "Example Recipe 3",
-      img: "/images/test.jpg",
-      recipeAuthor: "Aaron Detre",
-      datePosted: genericDate,
-    },
-    {
-      _id: "4",
-      recipeTitle: "Example Recipe 4",
-      img: "/images/test.jpg",
-      recipeAuthor: "Aaron Detre",
-      datePosted: genericDate,
-    },
-    {
-      _id: "5",
-      recipeTitle: "Example Recipe 5",
-      img: "/images/test.jpg",
-      recipeAuthor: "Aaron Detre",
-      datePosted: genericDate,
-    },
-  ];
+  const { currentUser } = useSelector((state: RootState) => state.account);
+  const [userRecipes, setUserRecipes] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
 
-  const recentReviews: Review[] = [
-    {
-      _id: "1",
-      recipe: userRecipes.at(2) ?? genericRecipe,
-      reviewTitle: "Gross",
-      reviewAuthor: genericUser,
-      stars: 0,
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet magna vestibulum, congue tellus in, semper felis. Curabitur facilisis hendrerit magna, eu sagittis",
-      datePosted: genericDate,
-    },
-    {
-      _id: "2",
-      recipe: userRecipes.at(0) ?? genericRecipe,
-      reviewTitle: "Pretty good recipe",
-      reviewAuthor: genericUser,
-      stars: 4,
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet magna vestibulum, congue tellus in, semper felis. Curabitur facilisis hendrerit magna, eu sagittis",
-      datePosted: genericDate,
-    },
-    {
-      _id: "3",
-      recipe: userRecipes.at(4) ?? genericRecipe,
-      reviewTitle: "Fine",
-      reviewAuthor: genericUser,
-      stars: 3,
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet magna vestibulum, congue tellus in, semper felis. Curabitur facilisis hendrerit magna, eu sagittis",
-      datePosted: genericDate,
-    },
-    {
-      _id: "4",
-      recipe: userRecipes.at(0) ?? genericRecipe,
-      reviewTitle: "good recipe",
-      reviewAuthor: genericUser,
-      stars: 5,
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet magna vestibulum, congue tellus in, semper ",
-      datePosted: genericDate,
-    },
-  ];
-
-  const displayStars = (stars: number) => {
-    const starIcons = [];
-    for (let i = 0; i < 5; i++) {
-      if (i <= stars) {
-        starIcons.push(<FaStar key={i} />);
-      } else {
-        starIcons.push(<FaRegStar key={i} />);
-      }
+  const fiveMostRecent = (array: any[]): any[] => {
+    const sorted = array.sort((a, b) => {
+      return (
+        new Date(b.datePosted).getTime() - new Date(a.datePosted).getTime()
+      );
+    });
+    return sorted.slice(0, 5);
+  };
+  const fetchRecentReviews = async () => {
+    const reviews = await reviewClient.getAllReviews();
+    setReviews(fiveMostRecent(reviews));
+  };
+  const fetchRecentUserRecipes = async () => {
+    const recipes = await localRecipeClient.getAllLocalRecipes();
+    setUserRecipes(fiveMostRecent(recipes));
+  };
+  const fetchFollowingRecentReviews = async (userId: string) => {
+    const reviews = await reviewClient.getFollowingReviews(userId);
+    setReviews(fiveMostRecent(reviews));
+  };
+  const fetchFollowingRecentRecipes = async (userId: string) => {
+    const recipes = await localRecipeClient.getFollowingRecipes(userId);
+    setUserRecipes(fiveMostRecent(recipes));
+  };
+  useEffect(() => {
+    if (currentUser) {
+      fetchFollowingRecentReviews(currentUser._id);
+      fetchFollowingRecentRecipes(currentUser._id);
+    } else {
+      fetchRecentReviews();
+      fetchRecentUserRecipes();
     }
-    return starIcons;
-  };
+  }, [currentUser]);
+
+  // const displayStars = (stars: number) => {
+  //   const starIcons = [];
+  //   for (let i = 1; i < 6; i++) {
+  //     if (i <= stars) {
+  //       starIcons.push(<FaStar key={i} />);
+  //     } else {
+  //       starIcons.push(<FaRegStar key={i} />);
+  //     }
+  //   }
+  //   return starIcons;
+  // };
 
   const abbreviateText = (text: string) => {
     if (text.length >= 100) {
@@ -131,49 +78,65 @@ export default function Home() {
     }
   };
 
-  const authorString = (user: User | string): string => {
-    if (typeof user === "string") {
-      return user;
+  const authorString = (user: any): string => {
+    if (user) {
+      if (typeof user === "string") {
+        return user;
+      } else {
+        console.log(user);
+        return user.username;
+      }
     } else {
-      return user.username;
+      return "";
     }
   };
 
   return (
-    <div className="wdf-anonymous-page d-lg-flex gap-4 ms-4 me-4">
+    <div className="wdf-anonymous-page d-xl-flex gap-4 ms-4 me-4">
       <Col>
         <Card className="mb-4 shadow p-3 bg-white rounded">
           <Card.Body>
             <Card.Title>Recent User-Created Recipes</Card.Title>
             <ListGroup>
-              {userRecipes.map((recipe) => (
-                <ListGroupItem
-                  key={recipe._id}
-                  className="d-flex align-items-center wdf-cursor-pointer"
-                >
-                  <Card>
-                    <Row className="no-gutters">
-                      <Col>
-                        <CardImg src={recipe.img} />
-                      </Col>
-                      <Col>
-                        <CardBody>
-                          <CardTitle
-                            as={Link}
-                            href={`details/${recipe._id}`}
-                            className="wdf-header"
-                          >
-                            {recipe.recipeTitle}
-                          </CardTitle>
-                          <CardText>
-                            By {authorString(recipe.recipeAuthor)}
-                          </CardText>
-                        </CardBody>
-                      </Col>
-                    </Row>
-                  </Card>
-                </ListGroupItem>
-              ))}
+              {userRecipes.length > 0 ? (
+                userRecipes.map((recipe) => (
+                  <ListGroupItem
+                    key={recipe._id}
+                    // as={Link}
+                    // href={`details/${recipe._id}/local`}
+                    className="d-flex align-items-center"
+                  >
+                    <Card className="w-100">
+                      <Row className="no-gutters">
+                        <Col>
+                          <CardImg src={recipe.img ?? "/images/plate.svg"} />
+                        </Col>
+                        <Col>
+                          <CardBody>
+                            <CardTitle
+                              as={Link}
+                              href={`details/${recipe._id}/local`}
+                              className="wdf-header"
+                            >
+                              {recipe.recipeTitle}
+                            </CardTitle>
+                            <CardText>
+                              By{" "}
+                              <Link
+                                href={`/profile/${recipe.recipeAuthor._id}`}
+                              >
+                                {authorString(recipe.recipeAuthor.username)}
+                              </Link>
+                            </CardText>
+                          </CardBody>
+                        </Col>
+                      </Row>
+                    </Card>
+                  </ListGroupItem>
+                ))
+              ) : (
+                <h4 className="mt-4">No recent user recipes...</h4>
+              )}
             </ListGroup>
           </Card.Body>
         </Card>
@@ -183,38 +146,52 @@ export default function Home() {
           <Card.Body>
             <Card.Title>Recent Recipe Reviews</Card.Title>
             <ListGroup>
-              {recentReviews.map((review) => (
-                <ListGroupItem
-                  key={review._id}
-                  className="d-flex align-items-center wdf-cursor-pointer"
-                >
-                  <Card>
-                    <Row className="no-gutters">
-                      <Col>
-                        <CardImg src={review.recipe.img} />
-                      </Col>
-                      <Col>
-                        <CardBody>
-                          <CardTitle
-                            as={Link}
-                            href={`details/${review.recipe._id}/review/${review._id}`}
-                            className="wdf-header"
-                          >
-                            {review.recipe.recipeTitle}
-                          </CardTitle>
-                          <CardText className="d-flex align-items-center">
-                            <span className="me-2">
-                              {review.reviewAuthor.username}
-                            </span>
-                            {displayStars(review.stars)}
-                          </CardText>
-                          <CardText>{abbreviateText(review.text)}</CardText>
-                        </CardBody>
-                      </Col>
-                    </Row>
-                  </Card>
-                </ListGroupItem>
-              ))}
+              {reviews.length > 0 ? (
+                reviews.map((review) => (
+                  <ListGroupItem
+                    key={review._id}
+                    className="d-flex align-items-center wdf-cursor-pointer"
+                  >
+                    <Card>
+                      <Row className="no-gutters">
+                        <Col>
+                          {/* TODO: review.recipe.img??? */}
+                          <CardImg src={"/images/plate.svg"} />
+                        </Col>
+                        <Col>
+                          <CardBody>
+                            <CardTitle
+                              as={Link}
+                              href={`details/${
+                                review.localRecipeId || review.apiRecipeId
+                              }/${
+                                review.localRecipeId ? "local" : "api"
+                              }/review/${review._id}`} //TODO: ?????
+                              className="wdf-header"
+                            >
+                              {/* {review.recipe.recipeTitle} //TODO: ?? */}
+                              {review.reviewTitle}
+                            </CardTitle>
+                            <CardText className="d-flex align-items-center">
+                              <span className="me-2">
+                                <Link
+                                  href={`/profile/${review.reviewAuthor._id}`}
+                                >
+                                  {review.reviewAuthor.username}
+                                </Link>
+                              </span>
+                              {displayStars(review.stars)}
+                            </CardText>
+                            <CardText>{abbreviateText(review.text)}</CardText>
+                          </CardBody>
+                        </Col>
+                      </Row>
+                    </Card>
+                  </ListGroupItem>
+                ))
+              ) : (
+                <h4 className="mt-4">No recent reviews...</h4>
+              )}
             </ListGroup>
           </Card.Body>
         </Card>
