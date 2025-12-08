@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import RecipeInfoCard from "../(Account)/profile/RecipeInfoCard";
 import { useEffect, useState } from "react";

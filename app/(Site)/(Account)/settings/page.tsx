@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { AppDispatch, RootState } from "@/app/(Site)/store";
 import FlexGap from "@/app/(Site)/UtilClasses/FlexGap";

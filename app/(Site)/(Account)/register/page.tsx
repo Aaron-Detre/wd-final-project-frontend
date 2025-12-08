@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import FlexGap from "../../UtilClasses/FlexGap";

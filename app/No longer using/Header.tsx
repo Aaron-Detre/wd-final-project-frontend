@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { RiAccountCircleLine } from "react-icons/ri";
 import { AiOutlineMenu } from "react-icons/ai";
