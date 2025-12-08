@@ -68,12 +68,14 @@ export default function ApiRecipeDetails() {
               variant="primary"
               className="me-2"
               disabled={!currentUser || currentUser.role === "AUTHOR"}
+              href={`/editor/review?apiRecipe=${recipeId}`}
             >
               Review
             </Button>
             <Button
               variant="warning"
               disabled={!currentUser || currentUser.role === "REVIEWER"}
+              href={`/editor?apiRecipe=${recipeId}`}
             >
               Remix
             </Button>

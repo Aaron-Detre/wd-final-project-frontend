@@ -1,5 +1,3 @@
-import { useSearchParams } from "next/navigation";
-import { Button } from "react-bootstrap";
 import { IoChevronBackCircleOutline } from "react-icons/io5";
 
 export default function BackButton() {

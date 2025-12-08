@@ -10,9 +10,10 @@ export type Recipe = {
   _id: string;
   recipeTitle: string;
   img?: string;
-  recipeAuthor: User | { _id: string; username: string };
+  recipeAuthor: { _id: string; username: string };
   datePosted: Date;
   ingredients: Ingredient[];
+  instructions: string[];
 };
 export type Ingredient = {
   ingredient: string;

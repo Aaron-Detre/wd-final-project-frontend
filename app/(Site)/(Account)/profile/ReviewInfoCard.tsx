@@ -1,5 +1,6 @@
 import { Image } from "react-bootstrap";
 import { GiKnifeFork } from "react-icons/gi";
+import "./infoCardStyles.css";
 
 export default function ReviewInfoCard({
   title,
@@ -22,7 +23,6 @@ export default function ReviewInfoCard({
         )}
       </div>
       <div className="wdf-info-card-body">
-        {/* TODO: WHY WON'T IT DO NO UNDERLINE WHY WHY */}
         <div className="wdf-info-card-body-header wdf-text-decoration-none">
           <span>{title}</span>
         </div>

@@ -1,6 +1,7 @@
 import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
 import { Review } from "../../UtilClasses/Types";
 import ReviewInfoCard from "./ReviewInfoCard";
+import FlexGap from "../../UtilClasses/FlexGap";
 
 const abbreviateText = (text: string) => {
   if (text && text.length >= 150) {
@@ -20,10 +21,10 @@ export default function ReviewListCard({
   linkToFullPage: string;
 }) {
   return (
-    <Card className="w-25">
+    <Card className="wdf-profile-review-list">
       <Card.Header>{title}</Card.Header>
       <Card.Body>
-        <ListGroup>
+        <ListGroup className="mb-2">
           {reviews.map(
             (review: Review, index: number) =>
               index < 5 && (
@@ -43,9 +44,12 @@ export default function ReviewListCard({
           )}
         </ListGroup>
         {reviews.length > 5 && (
-          <Button variant="primary" href={linkToFullPage}>
-            See more
-          </Button>
+          <div className="d-flex">
+            <FlexGap />
+            <Button variant="primary" href={linkToFullPage}>
+              See more
+            </Button>
+          </div>
         )}
       </Card.Body>
     </Card>

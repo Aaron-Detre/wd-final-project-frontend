@@ -1,6 +1,7 @@
 import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
 import { Recipe } from "../../UtilClasses/Types";
 import RecipeInfoCard from "./RecipeInfoCard";
+import FlexGap from "../../UtilClasses/FlexGap";
 
 export default function RecipeListCard({
   title,
@@ -12,10 +13,10 @@ export default function RecipeListCard({
   linkToFullPage: string;
 }) {
   return (
-    <Card className="w-25">
+    <Card className="wdf-profile-authored-list">
       <Card.Header>{title}</Card.Header>
       <Card.Body>
-        <ListGroup>
+        <ListGroup className="mb-2">
           {recipes.map(
             (recipe: Recipe, index: number) =>
               index < 5 && (
@@ -30,9 +31,12 @@ export default function RecipeListCard({
           )}
         </ListGroup>
         {recipes.length > 5 && (
-          <Button variant="primary" href={linkToFullPage}>
-            See more
-          </Button>
+          <div className="d-flex">
+            <FlexGap />
+            <Button variant="primary" href={linkToFullPage}>
+              See more
+            </Button>
+          </div>
         )}
       </Card.Body>
     </Card>

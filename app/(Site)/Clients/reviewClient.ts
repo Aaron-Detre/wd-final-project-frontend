@@ -1,4 +1,6 @@
 import axios from "axios";
+import { Review } from "../UtilClasses/Types";
+const axiosWithCredentials = axios.create({ withCredentials: true });
 
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 const REVIEWS_API = `${HTTP_SERVER}/api/reviews`;
@@ -21,5 +23,9 @@ export const getFollowingReviews = async (userId: string) => {
 };
 export const getReviewById = async (reviewId: string) => {
   const response = await axios.get(`${REVIEWS_API}/${reviewId}`);
+  return response.data;
+};
+export const createReview = async (review: Review) => {
+  const response = await axiosWithCredentials.put(`${REVIEWS_API}`, review);
   return response.data;
 };
