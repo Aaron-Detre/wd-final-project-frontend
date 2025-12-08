@@ -6,9 +6,10 @@ import { useEffect, useState } from "react";
 import * as userClient from "../../Clients/userClient";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
+  const router = useRouter();
   const { currentUser } = useSelector((state: RootState) => state.account);
   const [newUser, setNewUser] = useState({
     username: "",
@@ -33,7 +34,7 @@ export default function SignUp() {
 
   useEffect(() => {
     if (currentUser) {
-      redirect("/");
+      router.push("/");
     }
   }, [currentUser]);
 
