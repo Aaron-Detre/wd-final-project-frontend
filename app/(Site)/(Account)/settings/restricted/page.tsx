@@ -1,3 +1,4 @@
+"use client";
 import { setTitle } from "@/app/(Site)/reducer";
 import { useEffect } from "react";
 import { Button } from "react-bootstrap";
