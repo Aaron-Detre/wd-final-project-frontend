@@ -5,10 +5,10 @@ import { Col, Container, Row } from "react-bootstrap";
 import TOC from "./TOC/TOC";
 import { AiOutlineMenu } from "react-icons/ai";
 import TOCOffcanvas from "./TOC/TOCOffcanvas";
-import { usePathname } from "next/navigation";
 import { Provider } from "react-redux";
 import store from "./store";
 import Session from "./(Account)/Session";
+import Title from "./Title";
 
 export default function Layout({
   children,
@@ -16,23 +16,6 @@ export default function Layout({
   const [showOffcanvas, setshowOffcanvas] = useState(false);
   const handleOpenMenu = () => setshowOffcanvas(true);
   const handleCloseMenu = () => setshowOffcanvas(false);
-  const getTitle = (pathTokens: string[]): string => {
-    const firstPathToken = pathTokens.at(1);
-    const lastPathToken = pathTokens.at(pathTokens.length - 1);
-    if (firstPathToken === "details") {
-      if (pathTokens.at(pathTokens.length - 2) === "review") {
-        return "Review";
-      } else {
-        return "Recipe Details";
-      }
-    } else {
-      return lastPathToken
-        ? lastPathToken.charAt(0).toUpperCase() + lastPathToken.slice(1)
-        : "";
-    }
-  };
-  const pathTokens = usePathname().split("/");
-  const title = getTitle(pathTokens);
 
   return (
     <Provider store={store}>
@@ -42,10 +25,10 @@ export default function Layout({
             <Row className="d-block d-lg-none">
               <Col className="d-flex align-items-center">
                 <AiOutlineMenu
-                  className="wdf-header-menu-icon fs-1 m-3 d-lg-none"
+                  className="wdf-header-menu-icon fs-1 m-3 mt-4 d-lg-none"
                   onClick={handleOpenMenu}
                 />
-                <span className="wdf-header fs-1">{title}</span>
+                <Title />
               </Col>
             </Row>
             <Row className="d-lg-flex">

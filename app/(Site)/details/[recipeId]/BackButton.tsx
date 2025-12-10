@@ -2,7 +2,6 @@ import { IoChevronBackCircleOutline } from "react-icons/io5";
 
 export default function BackButton() {
   const goBack = () => {
-    console.log("HERE");
     history.back();
   };
   return (

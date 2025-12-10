@@ -2,35 +2,107 @@
 "use client";
 import {
   Button,
+  Card,
+  Col,
   Form,
   FormControl,
   FormGroup,
   FormLabel,
-  ListGroup,
-  ListGroupItem,
+  Row,
 } from "react-bootstrap";
-import { Ingredient } from "../UtilClasses/Types";
-import { useState } from "react";
+import {
+  Ingredient,
+  IngredientWithId,
+  InstructionWithId,
+} from "../UtilClasses/Types";
+import { useEffect, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
+import * as recipeClient from "../Clients/recipeClient";
 import * as localRecipeClient from "../Clients/localRecipeClient";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { v4 as uuidv4 } from "uuid";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import FlexGap from "../UtilClasses/FlexGap";
+import { setTitle } from "../reducer";
 
 export default function Editor() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setTitle("Recipe Editor"));
+  }, [dispatch]);
+
   const router = useRouter();
   const { currentUser } = useSelector((state: RootState) => state.account);
-  const [title, setTitle] = useState("");
-  const [ingredients, setIngredients] = useState<Ingredient[]>([
-    { ingredient: "", measure: "" },
+  const [recipeTitle, setRecipeTitle] = useState("");
+  const [ingredients, setIngredients] = useState<IngredientWithId[]>([
+    { id: uuidv4(), ingredient: "", measure: "" },
   ]);
-  const [instructions, setInstructions] = useState<string[]>([""]);
+  const [instructions, setInstructions] = useState<InstructionWithId[]>([
+    { id: uuidv4(), instruction: "" },
+  ]);
+  const searchParams = useSearchParams();
+  const localRecipeId = searchParams.get("localRecipe");
+  const apiRecipeId = searchParams.get("apiRecipe");
 
-  const titleChanges = (e: any) => setTitle(e.target.value);
+  const fetchRecipe = async () => {
+    if ((localRecipeId || apiRecipeId) && !(localRecipeId && apiRecipeId)) {
+      const recipeIngredients: IngredientWithId[] = [];
+      const recipeInstructions: InstructionWithId[] = [];
+      if (localRecipeId) {
+        const localRecipe = await localRecipeClient.getRecipeById(
+          localRecipeId
+        );
+        setRecipeTitle(localRecipe.recipeTitle);
+        localRecipe.ingredients?.forEach((ingredient: Ingredient) =>
+          recipeIngredients.push({ ...ingredient, id: uuidv4() })
+        );
+        localRecipe.instructions?.forEach((instruction: string) =>
+          recipeInstructions.push({ id: uuidv4(), instruction: instruction })
+        );
+      } else if (apiRecipeId) {
+        const apiRecipe = await recipeClient.getRecipeById(apiRecipeId);
+        setRecipeTitle(apiRecipe.strMeal);
+        for (let i = 1; i < 21; i++) {
+          const ingredient = apiRecipe[`strIngredient${i}`];
+          const measurement = apiRecipe[`strMeasure${i}`];
+          if (ingredient) {
+            recipeIngredients.push({
+              id: uuidv4(),
+              ingredient: ingredient,
+              measure: measurement ?? "",
+            });
+          }
+        }
+        const matchesStepPattern = (str: string) => /^step \d+$/.test(str);
+        apiRecipe.strInstructions
+          .split("\r\n")
+          .filter(
+            (instruction: string) =>
+              instruction &&
+              instruction !== "" &&
+              !matchesStepPattern(instruction)
+          )
+          .forEach(
+            (instruction: string) =>
+              recipeInstructions.push({
+                id: uuidv4(),
+                instruction: instruction,
+              }) //TODO: duplication
+          );
+      }
+      setIngredients(recipeIngredients);
+      setInstructions(recipeInstructions);
+    }
+  };
+  useEffect(() => {
+    fetchRecipe();
+  }, [localRecipeId, apiRecipeId]);
+
+  const titleChanges = (e: any) => setRecipeTitle(e.target.value);
   const ingredientChanges = (e: any, ingredientIndex: number) =>
     setIngredients(
-      ingredients.map((ingredient: Ingredient, index) => {
+      ingredients.map((ingredient: IngredientWithId, index) => {
         if (ingredientIndex === index) {
           return { ...ingredient, ingredient: e.target.value };
         } else {
@@ -40,7 +112,7 @@ export default function Editor() {
     );
   const measurementChanges = (e: any, measurementIndex: number) =>
     setIngredients(
-      ingredients.map((ingredient: Ingredient, index) => {
+      ingredients.map((ingredient: IngredientWithId, index) => {
         if (measurementIndex === index) {
           return { ...ingredient, measure: e.target.value };
         } else {
@@ -49,14 +121,19 @@ export default function Editor() {
       })
     );
   const addNewIngredient = () =>
-    setIngredients([...ingredients, { ingredient: "", measure: "" }]);
-  const deleteIngredient = (ingredientIndex: number) =>
-    setIngredients(
-      ingredients.filter((ingredient, index) => ingredientIndex !== index)
+    setIngredients([
+      ...ingredients,
+      { id: uuidv4(), ingredient: "", measure: "" },
+    ]);
+  const deleteIngredient = (ingredientIndex: number) => {
+    setIngredients((prevIngredients) =>
+      prevIngredients.filter((ingredient, index) => ingredientIndex !== index)
     );
+  };
+
   const instructionChanges = (e: any, instructionIndex: number) =>
     setInstructions(
-      instructions.map((instruction: string, index) => {
+      instructions.map((instruction: InstructionWithId, index) => {
         if (instructionIndex === index) {
           return e.target.value;
         } else {
@@ -64,7 +141,8 @@ export default function Editor() {
         }
       })
     );
-  const addNewInstruction = () => setInstructions([...instructions, ""]);
+  const addNewInstruction = () =>
+    setInstructions([...instructions, { id: uuidv4(), instruction: "" }]);
   const deleteInstruction = (instructionIndex: number) =>
     setInstructions(
       instructions.filter((instruction, index) => instructionIndex !== index)
@@ -82,72 +160,172 @@ export default function Editor() {
       const author = { _id: currentUser._id, username: currentUser.username };
       await localRecipeClient.createRecipe({
         _id: newRecipeId,
-        recipeTitle: title,
+        recipeTitle: recipeTitle,
         recipeAuthor: author,
         datePosted: new Date(Date.now()),
-        ingredients: ingredients,
-        instructions: instructions,
+        ingredients: ingredients.map((ingredient) => {
+          return {
+            ingredient: ingredient.ingredient,
+            measure: ingredient.measure,
+          };
+        }),
+        instructions: instructions.map(
+          (instruction) => instruction.instruction
+        ),
       });
     }
   };
 
+  //BONUS TODO: drag and drop https://docs.dndkit.com/presets/sortable
   return currentUser ? (
     currentUser.role !== "REVIEWER" ? (
       <div>
-        <h1>Create a new recipe</h1>
-        <Form onSubmit={handleSubmit}>
+        <h1 className="mb-4">Create a new recipe</h1>
+        <Form onSubmit={handleSubmit} className="mb-5">
           <FormGroup controlId="wdf-editor-title">
-            <FormLabel>Title</FormLabel>
-            <FormControl type="text" onChange={titleChanges} required />
+            <Card>
+              <Card.Body className="d-block d-md-flex align-items-baseline gap-3">
+                <FormLabel className="mb-0">
+                  <Card.Title>Title</Card.Title>
+                </FormLabel>
+                <FormControl
+                  type="text"
+                  onChange={titleChanges}
+                  placeholder="Give your recipe a title"
+                  defaultValue={recipeTitle}
+                  required
+                />
+              </Card.Body>
+            </Card>
           </FormGroup>
-          <div className="wdf-editor-ingredients">
-            <FormLabel>Ingredients</FormLabel>
-            <Button onClick={addNewIngredient}>+Ingredient</Button>
-            <ListGroup>
-              {ingredients.map((ingredient, index) => (
-                <ListGroupItem key={index}>
-                  <FormGroup controlId={`wdf-editor-ingredient-${index}`}>
-                    <FormLabel>Ingredient {index + 1}</FormLabel>
-                    <FormControl
-                      type="text"
-                      onChange={(e: any) => ingredientChanges(e, index)}
-                      required
-                    />
-                  </FormGroup>
-                  <FormGroup controlId={`wdf-editor-measure-${index}`}>
-                    <FormLabel>Measurement</FormLabel>
-                    <FormControl
-                      type="text"
-                      onChange={(e: any) => measurementChanges(e, index)}
-                      required
-                    />
-                  </FormGroup>
-                  <FaTrashAlt onClick={() => deleteIngredient(index)} />
-                </ListGroupItem>
-              ))}
-            </ListGroup>
-          </div>
-          <div className="wdf-editor-instructions">
-            <FormLabel>Instructions</FormLabel>
-            <Button onClick={addNewInstruction}>+Instruction</Button>
-            <ListGroup>
-              {instructions.map((instruction, index) => (
-                <ListGroupItem key={index}>
-                  <FormGroup controlId={`wdf-editor-instruction-${index}`}>
-                    <FormLabel>Step {index + 1}</FormLabel>
-                    <FormControl
-                      type="text"
-                      onChange={(e: any) => instructionChanges(e, index)}
-                      required
-                    />
-                  </FormGroup>
-                  <FaTrashAlt onClick={() => deleteInstruction(index)} />
-                </ListGroupItem>
-              ))}
-            </ListGroup>
-          </div>
-
-          <Button type="submit">Publish</Button>
+          <Row>
+            <Col lg={6} className="mt-3">
+              <div className="wdf-editor-ingredients">
+                <Card>
+                  <Card.Header className="d-flex align-items-baseline mt-1">
+                    <Card.Title>
+                      <FormLabel>Ingredients</FormLabel>
+                    </Card.Title>
+                    <FlexGap />
+                    <Button onClick={addNewIngredient} className="ms-2">
+                      +Ingredient
+                    </Button>
+                  </Card.Header>
+                  <Card.Body>
+                    {ingredients.map((ingredient, index) => (
+                      <Card
+                        key={ingredient.id}
+                        className={
+                          index === ingredients.length - 1 ? "" : "mb-3"
+                        }
+                      >
+                        <Card.Header className="d-flex align-items-center pb-1">
+                          <Card.Title>Ingredient {index + 1}</Card.Title>
+                          <FlexGap />
+                          <FaTrashAlt
+                            className="wdf-cursor-pointer"
+                            onClick={() => deleteIngredient(index)}
+                          />
+                        </Card.Header>
+                        <Card.Body className="pt-2">
+                          <Row>
+                            <Col xl={6}>
+                              <FormGroup
+                                controlId={`wdf-editor-ingredient-${index}`}
+                              >
+                                <FormLabel>Name</FormLabel>
+                                <FormControl
+                                  type="text"
+                                  placeholder="Ingredient Name"
+                                  onChange={(e: any) =>
+                                    ingredientChanges(e, index)
+                                  }
+                                  required
+                                  defaultValue={ingredient.ingredient}
+                                />
+                              </FormGroup>
+                            </Col>
+                            <Col xl={6}>
+                              <FormGroup
+                                // className="mt-2" TODO: media
+                                controlId={`wdf-editor-measure-${index}`}
+                              >
+                                <FormLabel>Measurement</FormLabel>
+                                <FormControl
+                                  type="text"
+                                  placeholder="Ingredient Measurement"
+                                  onChange={(e: any) =>
+                                    measurementChanges(e, index)
+                                  }
+                                  required
+                                  defaultValue={ingredient.measure}
+                                />
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                        </Card.Body>
+                      </Card>
+                    ))}
+                  </Card.Body>
+                </Card>
+              </div>
+            </Col>
+            <Col lg={6} className="mt-3">
+              <div className="wdf-editor-instructions">
+                <Card>
+                  <Card.Header className="mt-1 d-flex align-items-baseline">
+                    <Card.Title>
+                      <FormLabel>Instructions</FormLabel>
+                    </Card.Title>
+                    <FlexGap />
+                    <Button onClick={addNewInstruction} className="ms-2">
+                      +Instruction
+                    </Button>
+                  </Card.Header>
+                  <Card.Body>
+                    {instructions.map((instruction, index) => (
+                      <FormGroup
+                        key={instruction.id}
+                        controlId={`wdf-editor-instruction-${index}`}
+                      >
+                        <Card
+                          className={
+                            index === instructions.length - 1 ? "" : "mb-3"
+                          }
+                        >
+                          <Card.Header className="d-flex align-items-center pb-1">
+                            <FormLabel className="m-0">
+                              <Card.Title>Step {index + 1}</Card.Title>
+                            </FormLabel>
+                            <FlexGap />
+                            <FaTrashAlt
+                              className="wdf-cursor-pointer"
+                              onClick={() => deleteInstruction(index)}
+                            />
+                          </Card.Header>
+                          <Card.Body>
+                            <FormControl
+                              type="text"
+                              as={"textarea"}
+                              placeholder="Add instructions"
+                              onChange={(e: any) =>
+                                instructionChanges(e, index)
+                              }
+                              required
+                              defaultValue={instruction.instruction}
+                            />
+                          </Card.Body>
+                        </Card>
+                      </FormGroup>
+                    ))}
+                  </Card.Body>
+                </Card>
+              </div>
+            </Col>
+          </Row>
+          <Button className="mt-3" type="submit">
+            Publish Recipe
+          </Button>
         </Form>
       </div>
     ) : (

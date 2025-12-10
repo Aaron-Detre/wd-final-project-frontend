@@ -29,3 +29,13 @@ export type Review = {
   apiRecipeId?: string;
   localRecipeId?: string;
 };
+
+export type IngredientWithId = {
+  id: string;
+  ingredient: string;
+  measure: string;
+};
+export type InstructionWithId = {
+  id: string;
+  instruction: string;
+};

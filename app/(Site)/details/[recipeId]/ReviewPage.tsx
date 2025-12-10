@@ -10,6 +10,8 @@ import Link from "next/link";
 import "./reviewStyles.css";
 import displayStars from "@/app/(Site)/UtilClasses/DisplayStars";
 import BackButton from "./BackButton";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../../reducer";
 const defaultImage = "/images/plate.svg";
 
 export default function RecipeReview({
@@ -17,6 +19,11 @@ export default function RecipeReview({
 }: {
   isLocalRecipeReview: boolean;
 }) {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setTitle("Review"));
+  }, [dispatch]);
+
   const { recipeId, reviewId } = useParams();
   const [recipe, setRecipe] = useState<any>(null);
   const [review, setReview] = useState<any>(null);
@@ -50,6 +57,7 @@ export default function RecipeReview({
           }`}
           className="wdf-review-recipe-card shadow"
         >
+          {/* // TODO: HEADER? */}
           <Card.Img
             src={recipe?.strMealThumb ?? defaultImage}
             className="wdf-review-recipe-image"

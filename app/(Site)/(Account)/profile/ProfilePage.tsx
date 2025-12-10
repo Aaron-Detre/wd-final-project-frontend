@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { HiCog } from "react-icons/hi2";
 import FlexGap from "../../UtilClasses/FlexGap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import UserListCard from "./UserList";
 import { User } from "../../UtilClasses/Types";
@@ -16,6 +16,7 @@ import { Button, Card, Col, Modal, Row } from "react-bootstrap";
 import "./profileStyles.css";
 import UserInfoCard from "./UserInfoCard";
 import UserList from "./UserList";
+import { setTitle } from "../../reducer";
 
 const getUserRole = (user: User): string => {
   let displayRole: string;
@@ -52,6 +53,11 @@ const showReviewedRecipes = (user: User | null): boolean =>
   user !== null && user.role !== "AUTHOR";
 
 export default function ProfilePage() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setTitle("Profile"));
+  }, [dispatch]);
+
   const pathname = usePathname().split("/");
   const lastPathTerm = pathname.at(pathname.length - 1);
   const isYourProfile = lastPathTerm === "profile";
@@ -98,17 +104,6 @@ export default function ProfilePage() {
 
   const addSIfNotOneItemInArray = (array: any[]): string =>
     array.length !== 1 ? "s" : "";
-  // const addSIfOneItemInArray = (array: any[]): string =>
-  // array.length === 1 ? "s" : "";
-  // const usernameOrYou = () => (isYourProfile ? "You" : username);
-  // const getFollowingCardTitle = () =>
-  //   `${usernameOrYou()} Follow${isYourProfile ? "" : "s"} ${
-  //     following.length
-  //   } User${addSIfNotOneItemInArray(following)}`;
-  // const getFollowersCardTitle = () =>
-  //   `${followers.length} User${addSIfNotOneItemInArray(
-  //     followers
-  //   )} Follow${addSIfOneItemInArray(followers)} ${usernameOrYou()}`;
   const getAuthoredCardTitle = () =>
     `${authored.length} Recipe${addSIfNotOneItemInArray(authored)} Authored`;
   const getReviewsCardTitle = () =>
@@ -117,7 +112,6 @@ export default function ProfilePage() {
   const updateFollowingProfile = async (userId: string, profileId: string) => {
     const followingProfiles = await userClient.getUserFollowing(userId);
     const followingIds = followingProfiles.map((profile: User) => profile._id);
-    console.log(JSON.stringify(followingIds));
     setDoesCurrentUserFollowProfile(followingIds.includes(profileId));
   };
   const followProfile = async () => {
@@ -175,7 +169,7 @@ export default function ProfilePage() {
             </Button>
           ))}
         <FlexGap />
-        {isYourProfile && (
+        {isYourProfile && currentUser && (
           <Link
             href="/settings"
             className="d-flex wdf-text-decoration-none text-black align-items-center me-3"
@@ -185,34 +179,36 @@ export default function ProfilePage() {
         )}
       </div>
       {/* -------------------------------------------------------------------------------- */}
-      <div className="d-flex gap-3">
-        <h4
-          onClick={() => setShowFollowers(true)}
-          className="wdf-cursor-pointer"
-        >
-          <b>{followers.length}</b> followers
-        </h4>
-        <h4
-          onClick={() => setShowFollowing(true)}
-          className="wdf-cursor-pointer"
-        >
-          <b>{following.length}</b> following
-        </h4>
-        <FlexGap />
-        {isYourProfile && role !== "REVIEWER" && (
-          <Button href="/editor">+ Recipe</Button>
-        )}
-      </div>
+      {currentUser && (
+        <div className="d-flex gap-3">
+          <h4
+            onClick={() => setShowFollowers(true)}
+            className="wdf-cursor-pointer"
+          >
+            <b>{followers.length}</b> followers
+          </h4>
+          <h4
+            onClick={() => setShowFollowing(true)}
+            className="wdf-cursor-pointer"
+          >
+            <b>{following.length}</b> following
+          </h4>
+          <FlexGap />
+          {isYourProfile && role !== "REVIEWER" && (
+            <Button href="/editor">+ Recipe</Button>
+          )}
+        </div>
+      )}
       {/* -------------------------------------------------------------------------------- */}
       {profile && (
-        <div className="wdf-profile-body">
+        <div className="wdf-profile-body mb-5">
           <Row>
             {showAuthoredRecipes(profile) && authored.length > 0 && (
               <Col lg={getAuthoredWidth()} className="mb-3">
                 <RecipeListCard
                   title={getAuthoredCardTitle()}
                   recipes={authored}
-                  linkToFullPage="/profile/authored"
+                  linkToFullPage={`/profile/authored?id=${profile._id}`}
                 />
               </Col>
             )}
@@ -221,7 +217,7 @@ export default function ProfilePage() {
                 <ReviewListCard
                   title={getReviewsCardTitle()}
                   reviews={reviews}
-                  linkToFullPage="/profile/reviewed"
+                  linkToFullPage={`/profile/reviews?id=${profile._id}`}
                 />
               </Col>
             )}

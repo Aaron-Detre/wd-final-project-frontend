@@ -35,3 +35,6 @@ export const createReview = async (review: Review) => {
   const response = await axiosWithCredentials.put(`${REVIEWS_API}`, review);
   return response.data;
 };
+export const getReviewsForSomeRecipes = (recipeIds: string[]) => {
+  return Promise.all(recipeIds.map((id) => getAllReviewsForApiRecipe(id)));
+};

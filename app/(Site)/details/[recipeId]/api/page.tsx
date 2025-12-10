@@ -9,15 +9,22 @@ import { Ingredient } from "@/app/(Site)/UtilClasses/Types";
 import InstructionsCard from "../InstructionsCard";
 import IngredientsCard from "../IngredientsCard";
 import ReviewsCard from "../ReviewsCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/(Site)/store";
 import BackButton from "../BackButton";
+import FlexGap from "@/app/(Site)/UtilClasses/FlexGap";
+import { setTitle } from "@/app/(Site)/reducer";
 const defaultImage = "/images/plate.svg";
 
 const firstLetterToUppercase = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
 
 export default function ApiRecipeDetails() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setTitle("Recipe Details"));
+  }, [dispatch]);
+
   const { currentUser } = useSelector((state: RootState) => state.account);
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState<any>(null);
@@ -61,25 +68,28 @@ export default function ApiRecipeDetails() {
   return (
     <div className="wdf-details-container">
       <div className="wdf-details-top-row">
-        <Col xs={8} className="wdf-details-left">
+        <Col sm={8} className="wdf-details-left">
           <div className="d-flex align-items-center">
             <BackButton />
             <h1 className="wdf-details-title">{recipe?.strMeal}</h1>
-            <Button
-              variant="primary"
-              className="me-2"
-              disabled={!currentUser || currentUser.role === "AUTHOR"}
-              href={`/editor/review?apiRecipe=${recipeId}`}
-            >
-              Review
-            </Button>
-            <Button
-              variant="warning"
-              disabled={!currentUser || currentUser.role === "REVIEWER"}
-              href={`/editor?apiRecipe=${recipeId}`}
-            >
-              Remix
-            </Button>
+            <FlexGap />
+            <div className="wdf-details-buttons">
+              <Button
+                variant="primary"
+                className="me-2 ms-2"
+                disabled={!currentUser || currentUser.role === "AUTHOR"}
+                href={`/editor/review?apiRecipe=${recipeId}`}
+              >
+                Review
+              </Button>
+              <Button
+                variant="warning"
+                disabled={!currentUser || currentUser.role === "REVIEWER"}
+                href={`/editor?apiRecipe=${recipeId}`}
+              >
+                Remix
+              </Button>
+            </div>
           </div>
           <div className="wdf-details-body">
             <Row>
@@ -92,7 +102,7 @@ export default function ApiRecipeDetails() {
             </Row>
           </div>
         </Col>
-        <Col xs={4} className="wdf-details-right">
+        <Col sm={4} className="wdf-details-right">
           <Image
             src={recipe?.strMealThumb ? recipe.strMealThumb : defaultImage}
             className="wdf-details-image"

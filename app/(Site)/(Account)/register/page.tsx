@@ -5,10 +5,17 @@ import FlexGap from "../../UtilClasses/FlexGap";
 import { useEffect, useState } from "react";
 import * as userClient from "../../Clients/userClient";
 import { RootState } from "../../store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { setTitle } from "../../reducer";
 
 export default function SignUp() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setTitle("Sign Up"));
+  }, [dispatch]);
+
   const router = useRouter();
   const { currentUser } = useSelector((state: RootState) => state.account);
   const [newUser, setNewUser] = useState({

@@ -3,23 +3,14 @@ import { User } from "../../UtilClasses/Types";
 import UserInfoCard from "./UserInfoCard";
 
 export default function UserList({
-  // title,
   users,
-  // linkToFullPage,
   getUserRole,
 }: {
-  // title: string;
   users: User[];
-  // linkToFullPage: string;
   getUserRole: (user: User) => string;
 }) {
-  // const emptyListClass = () =>
-  // users.length === 0 ? "wdf-profile-empty-list" : "";
-
   return (
-    // <Card className={`wdf-profile-user-list ${emptyListClass()}`}>
-    // <Card.Header>{title}</Card.Header>
-    // <Card.Body>
+    //TODO: remove all listgroups maybe
     <ListGroup>
       {users.map(
         (user: User, index: number) =>
@@ -30,12 +21,5 @@ export default function UserList({
           )
       )}
     </ListGroup>
-    // {users.length > 5 && (
-    //   <Button variant="primary" href={linkToFullPage}>
-    //     See more
-    //   </Button>
-    // )}
-    // </Card.Body>
-    // </Card>
   );
 }

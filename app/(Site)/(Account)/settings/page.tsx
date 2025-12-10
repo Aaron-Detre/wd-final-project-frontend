@@ -9,19 +9,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import { redirect } from "next/navigation";
 import * as userClient from "../../Clients/userClient";
+import { setTitle } from "../../reducer";
 
 //TODO: duplication -- copied from sign up page
 //TODO: make sure SAVE doesn't save empty username/password
 
 export default function Settings() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setTitle("Settings"));
+  }, [dispatch]);
+
   const [updatedUser, setUpdatedUser] = useState<any>(null);
-  const [role, setRole] = useState("");
   const { currentUser } = useSelector((state: RootState) => state.account);
 
   const fetchProfile = () => {
     if (currentUser) {
       setUpdatedUser(currentUser);
-      setRole(currentUser.role);
     } else {
       redirect("/settings/restricted");
     }
@@ -41,13 +45,14 @@ export default function Settings() {
   const roleChanges = (value: string) =>
     setUpdatedUser({ ...updatedUser, role: value });
 
-  const dispatch: AppDispatch = useDispatch();
   const onSave = () => {
     userClient.updateUser(updatedUser._id, updatedUser);
     dispatch(setCurrentUser(updatedUser));
   };
 
-  console.log("Role: " + updatedUser?.role + " | " + role);
+  const getDefaultCheckedRole = (roleCheckbox: string) => {
+    return updatedUser?.role === roleCheckbox;
+  };
 
   return (
     <div>
@@ -107,7 +112,7 @@ export default function Settings() {
                     id="wdf-recipe-author-radio"
                     label="Recipe Author"
                     onClick={() => roleChanges("AUTHOR")}
-                    defaultChecked={role === "AUTHOR"}
+                    checked={getDefaultCheckedRole("AUTHOR")}
                   />
                   <Form.Check
                     type="radio"
@@ -115,7 +120,7 @@ export default function Settings() {
                     id="wdf-recipe-reviewer-radio"
                     label="Recipe Reviewer"
                     onClick={() => roleChanges("REVIEWER")}
-                    defaultChecked={role === "REVIEWER"}
+                    checked={getDefaultCheckedRole("REVIEWER")}
                   />
                   <Form.Check
                     type="radio"
@@ -123,7 +128,7 @@ export default function Settings() {
                     id="wdf-both-radio"
                     label="Both"
                     onClick={() => roleChanges("BOTH")}
-                    defaultChecked={role === "BOTH"}
+                    checked={getDefaultCheckedRole("BOTH")}
                   />
                 </Form.Group>
               </Card.Body>

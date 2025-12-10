@@ -11,18 +11,24 @@ import {
   FormLabel,
 } from "react-bootstrap";
 import FlexGap from "../../UtilClasses/FlexGap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import { redirect } from "next/navigation";
 import * as userClient from "../../Clients/userClient";
+import { setTitle } from "../../reducer";
 
 export default function SignIn() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setTitle("Login"));
+  }, [dispatch]);
+
   const [credentials, setCredentials] = useState<{
     username: string;
     password: string;
   }>({ username: "", password: "" });
-  const dispatch = useDispatch();
   const signIn = async () => {
     const user = await userClient.signIn(credentials);
     if (user) {
@@ -48,6 +54,7 @@ export default function SignIn() {
             id="username-entry"
             type="text"
             className="mb-3"
+            placeholder="Username"
             onChange={usernameChanges}
             onKeyDown={handleKeyDown}
           />
@@ -55,6 +62,7 @@ export default function SignIn() {
           <FormControl
             id="username-entry"
             type="password"
+            placeholder="Password"
             onChange={passwordChanges}
             onKeyDown={handleKeyDown}
           />

@@ -1,7 +1,14 @@
-import Link from "next/link";
+import { setTitle } from "@/app/(Site)/reducer";
+import { useEffect } from "react";
 import { Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 
 export default function RestrictedSettingsPage() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setTitle("Settings"));
+  }, [dispatch]);
+
   return (
     <div>
       <h1 className="ms-3">Sign in to view or change your settings</h1>

@@ -4,22 +4,28 @@ import { useRouter, useSearchParams } from "next/navigation";
 import * as localRecipeClient from "../../Clients/localRecipeClient";
 import * as recipeClient from "../../Clients/recipeClient";
 import * as reviewClient from "../../Clients/reviewClient";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { Button, FormControl, FormGroup, FormLabel } from "react-bootstrap";
 import "../editorStyles.css";
 import { Review } from "../../UtilClasses/Types";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { v4 as uuidv4 } from "uuid";
+import { setTitle } from "@/app/(Site)/reducer";
 
 export default function ReviewEditor() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setTitle("Review Editor"));
+  }, [dispatch]);
+
   const { currentUser } = useSelector((state: RootState) => state.account);
   const router = useRouter();
   const searchParams = useSearchParams();
   const apiRecipeId = searchParams.get("apiRecipe");
   const localRecipeId = searchParams.get("localRecipe");
-  const [title, setTitle] = useState("");
+  const [recipeTitle, setRecipeTitle] = useState("");
   // const [hoverStars, setHoverStars] = useState(0); BONUS!!!
   const [stars, setStars] = useState(0);
   const [reviewTitle, setReviewTitle] = useState("");
@@ -29,14 +35,14 @@ export default function ReviewEditor() {
   const setApiRecipeDetails = async (apiRecipeId: string) => {
     if (!detailsSet) {
       const apiRecipe = await recipeClient.getRecipeById(apiRecipeId);
-      setTitle(apiRecipe.strMeal);
+      setRecipeTitle(apiRecipe.strMeal);
       detailsSet = true;
     }
   };
   const setLocalRecipeDetails = async (localRecipeId: string) => {
     if (!detailsSet) {
       const localRecipe = await localRecipeClient.getRecipeById(localRecipeId);
-      setTitle(localRecipe.recipeTitle);
+      setRecipeTitle(localRecipe.recipeTitle);
       detailsSet = true;
     }
   };
@@ -109,7 +115,7 @@ export default function ReviewEditor() {
 
   return currentUser ? (
     <div>
-      <h1 className="mb-4">Reviewing Recipe: {title}</h1>
+      <h1 className="mb-4">Reviewing Recipe: {recipeTitle}</h1>
       <FormGroup
         className="d-flex align-items-baseline"
         controlId="wdf-editor-review-stars"
@@ -123,13 +129,19 @@ export default function ReviewEditor() {
         <FormLabel className="wdf-editor-review-form-label">
           Review Title
         </FormLabel>
-        <FormControl type="text" onChange={titleChanges} required />
+        <FormControl
+          type="text"
+          onChange={titleChanges}
+          placeholder="Give your review a title"
+          required
+        />
       </FormGroup>
       <FormGroup controlId="wdf-editor-review-text" className="mt-3">
         <FormLabel className="wdf-editor-review-form-label">Review</FormLabel>
         <FormControl
           as="textarea"
           type="text"
+          placeholder="Write your review here"
           rows={5}
           onChange={textChanges}
         />
