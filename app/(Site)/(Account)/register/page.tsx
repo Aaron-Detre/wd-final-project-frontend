@@ -80,22 +80,24 @@ export default function SignUp() {
                   name="role-select"
                   id="wdf-recipe-author-radio"
                   label="Recipe Author"
-                  onClick={() => roleChanges("AUTHOR")}
+                  onChange={() => roleChanges("AUTHOR")}
+                  checked={newUser.role === "AUTHOR"}
                 />
                 <Form.Check
                   type="radio"
                   name="role-select"
                   id="wdf-recipe-reviewer-radio"
                   label="Recipe Reviewer"
-                  onClick={() => roleChanges("REVIEWER")}
+                  onChange={() => roleChanges("REVIEWER")}
+                  checked={newUser.role === "REVIEWER"}
                 />
                 <Form.Check
                   type="radio"
                   name="role-select"
                   id="wdf-both-radio"
                   label="Both"
-                  onClick={() => roleChanges("BOTH")}
-                  defaultChecked
+                  onChange={() => roleChanges("BOTH")}
+                  checked={newUser.role === "BOTH"}
                 />
               </Form.Group>
             </Card.Body>
