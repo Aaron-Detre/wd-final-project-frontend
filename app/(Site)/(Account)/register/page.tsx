@@ -8,6 +8,7 @@ import { RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { setTitle } from "../../reducer";
+import { setCurrentUser } from "../reducer";
 
 export default function SignUp() {
   const dispatch = useDispatch();
@@ -37,7 +38,11 @@ export default function SignUp() {
   const roleChanges = (value: string) =>
     setNewUser({ ...newUser, role: value });
 
-  const signUp = () => userClient.signUp(newUser);
+  const signUp = async (e: any) => {
+    e.preventDefault();
+    const signedUp = await userClient.signUp(newUser);
+    dispatch(setCurrentUser(signedUp));
+  };
 
   useEffect(() => {
     if (currentUser) {
@@ -49,7 +54,7 @@ export default function SignUp() {
     <div className="d-flex justify-content-center">
       <Col xl={4} sm={2} xs={1}></Col>
       <Col xl={4} sm={8} xs={10}>
-        <Form className="w-100 mt-5">
+        <Form className="w-100 mt-5" onSubmit={signUp}>
           <Card>
             <Card.Header>Sign Up</Card.Header>
             <Card.Body>
@@ -111,7 +116,7 @@ export default function SignUp() {
               >
                 Cancel
               </Button>
-              <Button variant="primary" type="submit" onClick={signUp}>
+              <Button variant="primary" type="submit">
                 Sign Up
               </Button>
             </Card.Footer>
@@ -119,7 +124,6 @@ export default function SignUp() {
         </Form>
       </Col>
       <Col xl={4} sm={2} xs={1}></Col>
-      {/* <div className="wdf-temp">{stringify(newUser)}</div> */}
     </div>
   );
 }
