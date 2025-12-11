@@ -46,7 +46,7 @@ export default function SignIn() {
 
   return (
     <div className="d-flex justify-content-center">
-      <Card className="w-25 mt-5">
+      <Card className="wdf-login-card mt-5">
         <CardHeader>Sign In</CardHeader>
         <CardBody>
           <FormLabel htmlFor="username-entry">Username</FormLabel>

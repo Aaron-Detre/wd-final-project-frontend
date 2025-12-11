@@ -70,3 +70,31 @@
 .wdf-border-light {
   border: 2px solid gray;
 }
+
+.wdf-login-card {
+  width: 25%;
+}
+
+@media (max-width: 1285px) {
+  .wdf-login-card {
+    width: 33%;
+  }
+}
+
+@media (max-width: 1100px) {
+  .wdf-login-card {
+    width: 40%;
+  }
+}
+
+@media (max-width: 750px) {
+  .wdf-login-card {
+    width: 60%;
+  }
+}
+
+@media (max-width: 475px) {
+  .wdf-login-card {
+    width: 80%;
+  }
+}
