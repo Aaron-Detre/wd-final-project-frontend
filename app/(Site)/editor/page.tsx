@@ -41,6 +41,7 @@ export default function Editor() {
   const [instructions, setInstructions] = useState<InstructionWithId[]>([
     { id: uuidv4(), instruction: "" },
   ]);
+  const [image, setImage] = useState("");
   const searchParams = useSearchParams();
   const localRecipeId = searchParams.get("localRecipe");
   const apiRecipeId = searchParams.get("apiRecipe");
@@ -54,6 +55,7 @@ export default function Editor() {
           localRecipeId
         );
         setRecipeTitle(localRecipe.recipeTitle);
+        if (localRecipe.img) setImage(localRecipe.img);
         localRecipe.ingredients?.forEach((ingredient: Ingredient) =>
           recipeIngredients.push({ ...ingredient, id: uuidv4() })
         );
@@ -63,6 +65,7 @@ export default function Editor() {
       } else if (apiRecipeId) {
         const apiRecipe = await recipeClient.getRecipeById(apiRecipeId);
         setRecipeTitle(apiRecipe.strMeal);
+        setImage(apiRecipe.strMealThumb);
         for (let i = 1; i < 21; i++) {
           const ingredient = apiRecipe[`strIngredient${i}`];
           const measurement = apiRecipe[`strMeasure${i}`];
@@ -100,6 +103,7 @@ export default function Editor() {
   }, [localRecipeId, apiRecipeId]);
 
   const titleChanges = (e: any) => setRecipeTitle(e.target.value);
+  const imageChanges = (e: any) => setImage(e.target.value);
   const ingredientChanges = (e: any, ingredientIndex: number) =>
     setIngredients(
       ingredients.map((ingredient: IngredientWithId, index) => {
@@ -164,6 +168,7 @@ export default function Editor() {
         _id: newRecipeId,
         recipeTitle: recipeTitle,
         recipeAuthor: author,
+        img: image !== "" ? image : undefined,
         datePosted: new Date(Date.now()),
         ingredients: ingredients.map((ingredient) => {
           return {
@@ -194,9 +199,27 @@ export default function Editor() {
                   type="text"
                   onChange={titleChanges}
                   placeholder="Give your recipe a title"
-                  defaultValue={recipeTitle}
+                  value={recipeTitle}
                   required
                 />
+              </Card.Body>
+            </Card>
+          </FormGroup>
+          <FormGroup controlId="wdf-editor-image" className="mt-3">
+            <Card>
+              <Card.Body className="d-block d-md-flex align-items-center gap-3">
+                <FormLabel className="mb-0">
+                  <Card.Title>Image URL*</Card.Title>
+                </FormLabel>
+                <FormControl
+                  type="text"
+                  onChange={imageChanges}
+                  placeholder="Upload a web URL with a picture of your recipe"
+                  value={image}
+                />
+                <Card.Text className="mt-1">
+                  *images will be resized to square
+                </Card.Text>
               </Card.Body>
             </Card>
           </FormGroup>
@@ -243,7 +266,7 @@ export default function Editor() {
                                     ingredientChanges(e, index)
                                   }
                                   required
-                                  defaultValue={ingredient.ingredient}
+                                  value={ingredient.ingredient}
                                 />
                               </FormGroup>
                             </Col>
@@ -260,7 +283,7 @@ export default function Editor() {
                                     measurementChanges(e, index)
                                   }
                                   required
-                                  defaultValue={ingredient.measure}
+                                  value={ingredient.measure}
                                 />
                               </FormGroup>
                             </Col>

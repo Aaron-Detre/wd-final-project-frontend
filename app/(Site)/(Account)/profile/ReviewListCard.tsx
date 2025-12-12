@@ -5,15 +5,6 @@ import FlexGap from "../../UtilClasses/FlexGap";
 import Link from "next/link";
 import { FaTrashAlt } from "react-icons/fa";
 import * as reviewClient from "../../Clients/reviewClient";
-
-const abbreviateText = (text: string) => {
-  if (text && text.length >= 150) {
-    return text.slice(0, 158) + "...";
-  } else {
-    return text;
-  }
-};
-
 export default function ReviewListCard({
   title,
   reviews,
@@ -53,10 +44,7 @@ export default function ReviewListCard({
                       review._id
                     }`}
                   >
-                    <ReviewInfoCard
-                      title={review.reviewTitle}
-                      text={abbreviateText(review.text)}
-                    />
+                    <ReviewInfoCard title={review.reviewTitle} />
                   </Link>
                   {isYourProfile && (
                     <FaTrashAlt

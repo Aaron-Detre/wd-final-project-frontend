@@ -120,3 +120,20 @@
 .wdf-color-black {
   color: black !important;
 }
+
+.wdf-info-card-image-thumbnail-small {
+  width: 200px;
+  height: 200px;
+}
+
+@media (max-width: 650px) {
+  .wdf-info-card-image-thumbnail-small {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+.wdf-info-card-trash {
+  float: right;
+  font-size: 20 !important;
+}

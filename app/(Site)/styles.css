@@ -98,3 +98,15 @@
     width: 80%;
   }
 }
+
+.wdf-home-recipe-thumbnail {
+  width: 200px;
+  height: 200px;
+}
+
+@media (max-width: 650px) {
+  .wdf-home-recipe-thumbnail {
+    width: 100px;
+    height: 100px;
+  }
+}

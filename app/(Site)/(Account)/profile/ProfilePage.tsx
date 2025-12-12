@@ -222,7 +222,7 @@ export default function ProfilePage() {
         <div className="wdf-profile-body mb-5">
           <Row>
             {showAuthoredRecipes(profile) && authored.length > 0 && (
-              <Col lg={getAuthoredWidth()} className="mb-3">
+              <Col xl={getAuthoredWidth()} className="mb-3">
                 <RecipeListCard
                   title={getAuthoredCardTitle()}
                   recipes={authored}
@@ -233,7 +233,7 @@ export default function ProfilePage() {
               </Col>
             )}
             {showReviewedRecipes(profile) && reviews.length > 0 && (
-              <Col lg={getReviewsWidth()}>
+              <Col xl={getReviewsWidth()}>
                 <ReviewListCard
                   title={getReviewsCardTitle()}
                   reviews={reviews}

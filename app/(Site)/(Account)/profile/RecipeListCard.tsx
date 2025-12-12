@@ -35,7 +35,7 @@ export default function RecipeListCard({
               (!linkToFullPage || index < 5) && (
                 <ListGroupItem
                   key={recipe._id}
-                  className="d-flex wdf-info-card-hover"
+                  className="d-block d-md-flex wdf-info-card-hover"
                 >
                   <Link
                     className="wdf-flex-gap wdf-text-decoration-none"
@@ -46,7 +46,7 @@ export default function RecipeListCard({
                   {isYourProfile && (
                     <FaTrashAlt
                       onClick={() => handleDeleteClicked(recipe._id)}
-                      className="fs-5 wdf-cursor-pointer"
+                      className="wdf-info-card-trash wdf-cursor-pointer"
                     />
                   )}
                 </ListGroupItem>

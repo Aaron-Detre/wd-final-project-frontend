@@ -7,13 +7,13 @@ import {
   CardText,
   CardTitle,
   Col,
-  Row,
 } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { RootState } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 import * as localRecipeClient from "../Clients/localRecipeClient";
+import * as recipeClient from "../Clients/recipeClient";
 import * as reviewClient from "../Clients/reviewClient";
 import displayStars from "../UtilClasses/DisplayStars";
 import { setTitle } from "../reducer";
@@ -27,6 +27,7 @@ export default function Home() {
   const { currentUser } = useSelector((state: RootState) => state.account);
   const [userRecipes, setUserRecipes] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewImages, setReviewImages] = useState<string[]>([]);
 
   const fiveMostRecent = (array: any[]): any[] => {
     const sorted = array.sort((a, b) => {
@@ -39,6 +40,7 @@ export default function Home() {
   const fetchRecentReviews = async () => {
     const reviews = await reviewClient.getAllReviews();
     setReviews(fiveMostRecent(reviews));
+    fetchReviewImages(reviews);
   };
   const fetchRecentUserRecipes = async () => {
     const recipes = await localRecipeClient.getAllLocalRecipes();
@@ -47,6 +49,7 @@ export default function Home() {
   const fetchFollowingRecentReviews = async (userId: string) => {
     const reviews = await reviewClient.getFollowingReviews(userId);
     setReviews(fiveMostRecent(reviews));
+    fetchReviewImages(reviews);
   };
   const fetchFollowingRecentRecipes = async (userId: string) => {
     const recipes = await localRecipeClient.getFollowingRecipes(userId);
@@ -82,6 +85,28 @@ export default function Home() {
     }
   };
 
+  const fetchReviewImages = async (reviews: any[]) => {
+    const images = await Promise.all(
+      reviews.map(async (review, i) => {
+        try {
+          if (review.localRecipeId) {
+            const recipe = await localRecipeClient.getRecipeById(
+              review.localRecipeId
+            );
+            return recipe?.img ?? "/images/plate.svg";
+          } else {
+            const recipe = await recipeClient.getRecipeById(review.apiRecipeId);
+            return recipe?.strMealThumb ?? "/images/plate.svg";
+          }
+        } catch (err) {
+          console.error("Error fetching recipe:", err);
+          return "/images/plate.svg";
+        }
+      })
+    );
+    setReviewImages(images);
+  };
+
   return (
     <div>
       <div className="wdf-anonymous-page d-xl-flex gap-4 ms-4 me-4">
@@ -104,30 +129,29 @@ export default function Home() {
                       index === userRecipes.length - 1 ? "" : "mb-2"
                     }`}
                   >
-                    <Row className="no-gutters">
-                      <Col>
-                        <Link href={`/profile/${recipe.recipeAuthor._id}`}>
-                          <CardImg src={recipe.img ?? "/images/plate.svg"} />
-                        </Link>
-                      </Col>
-                      <Col>
-                        <CardBody>
-                          <CardTitle
-                            as={Link}
-                            href={`details/${recipe._id}/local`}
-                            className="wdf-header"
-                          >
-                            {recipe.recipeTitle}
-                          </CardTitle>
-                          <CardText>
-                            By{" "}
-                            <Link href={`/profile/${recipe.recipeAuthor._id}`}>
-                              {authorString(recipe.recipeAuthor.username)}
-                            </Link>
-                          </CardText>
-                        </CardBody>
-                      </Col>
-                    </Row>
+                    <div className="d-flex gap-2">
+                      <Link href={`/profile/${recipe.recipeAuthor._id}`}>
+                        <CardImg
+                          className="wdf-home-recipe-thumbnail p-2"
+                          src={recipe.img ?? "/images/plate.svg"}
+                        />
+                      </Link>
+                      <CardBody>
+                        <CardTitle
+                          as={Link}
+                          href={`details/${recipe._id}/local`}
+                          className="wdf-header"
+                        >
+                          {recipe.recipeTitle}
+                        </CardTitle>
+                        <CardText>
+                          By{" "}
+                          <Link href={`/profile/${recipe.recipeAuthor._id}`}>
+                            {authorString(recipe.recipeAuthor.username)}
+                          </Link>
+                        </CardText>
+                      </CardBody>
+                    </div>
                   </Card>
                 ))
               ) : (
@@ -151,59 +175,54 @@ export default function Home() {
                 reviews.map((review, index) => (
                   <Card
                     key={review._id}
-                    className={`w-100 ${
-                      index === userRecipes.length - 1 ? "" : "mb-2"
-                    }`}
+                    // className={`w-100 ${
+                    //   index === userRecipes.length - 1 ? "" : "mb-2"
+                    // }`}
+                    className="w-100 mb-2"
                   >
-                    <Row className="no-gutters">
-                      <Col>
-                        {/* TODO: review.recipe.img??? */}
-                        {/* TODO: link duplication */}
-                        <Link
+                    <div className="d-flex gap-2">
+                      {/* TODO: review.recipe.img??? */}
+                      {/* TODO: link duplication */}
+                      <Link
+                        href={`details/${
+                          review.localRecipeId || review.apiRecipeId
+                        }/${review.localRecipeId ? "local" : "api"}/review/${
+                          review._id
+                        }`}
+                      >
+                        <CardImg
+                          className="wdf-home-recipe-thumbnail p-2"
+                          src={reviewImages.at(index)} //TODO: put in review or invariant or something
+                        />
+                      </Link>
+                      <CardBody>
+                        <CardTitle
+                          as={Link}
                           href={`details/${
                             review.localRecipeId || review.apiRecipeId
                           }/${review.localRecipeId ? "local" : "api"}/review/${
                             review._id
-                          }`}
+                          }`} //TODO: ?????
+                          className="wdf-header"
                         >
-                          <CardImg src={"/images/plate.svg"} />
-                        </Link>
-                      </Col>
-                      <Col>
-                        <CardBody>
-                          <CardTitle
-                            as={Link}
-                            href={`details/${
-                              review.localRecipeId || review.apiRecipeId
-                            }/${
-                              review.localRecipeId ? "local" : "api"
-                            }/review/${review._id}`} //TODO: ?????
-                            className="wdf-header"
-                          >
-                            {/* {review.recipe.recipeTitle} //TODO: ?? */}
-                            {review.reviewTitle}
-                          </CardTitle>
-                          <CardText className="d-flex align-items-center">
-                            <span className="me-2">
-                              <Link
-                                href={`/profile/${review.reviewAuthor._id}`}
-                              >
-                                {review.reviewAuthor.username}
-                              </Link>
-                            </span>
-                            {displayStars(review.stars)}
-                          </CardText>
-                          <CardText>{abbreviateText(review.text)}</CardText>
-                        </CardBody>
-                      </Col>
-                    </Row>
+                          {review.reviewTitle}
+                        </CardTitle>
+                        <CardText className="d-flex align-items-center">
+                          <span className="me-2">
+                            <Link href={`/profile/${review.reviewAuthor._id}`}>
+                              {review.reviewAuthor.username}
+                            </Link>
+                          </span>
+                          {displayStars(review.stars)}
+                        </CardText>
+                        <CardText>{abbreviateText(review.text)}</CardText>
+                      </CardBody>
+                    </div>
                   </Card>
-                  // </ListGroupItem>
                 ))
               ) : (
                 <h4 className="mt-4">No recent reviews...</h4>
               )}
-              {/* </ListGroup> */}
             </Card.Body>
           </Card>
         </Col>
