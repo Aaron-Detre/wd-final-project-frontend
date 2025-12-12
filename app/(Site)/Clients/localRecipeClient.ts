@@ -28,10 +28,15 @@ export const getFollowingRecipes = async (userId: string) => {
   return response.data;
 };
 export const createRecipe = async (recipe: Recipe) => {
-  const response = await axiosWithCredentials.put(`${RECIPES_API}`, recipe);
+  const response = await axiosWithCredentials.put(
+    `${RECIPES_API}/create`,
+    recipe
+  );
   return response.data;
 };
 export const deleteRecipe = async (recipeId: string) => {
-  const response = await axiosWithCredentials.put(`${RECIPES_API}/${recipeId}`);
+  const response = await axiosWithCredentials.put(
+    `${RECIPES_API}/delete/${recipeId}`
+  );
   return response.data;
 };

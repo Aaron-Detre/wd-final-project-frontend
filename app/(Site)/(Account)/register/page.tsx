@@ -60,23 +60,37 @@ export default function SignUp() {
             <Card.Body>
               <Form.Group controlId="wdf-username-entry" className="mb-3">
                 <Form.Label>Username</Form.Label>
-                <Form.Control type="text" onChange={usernameChanges} required />
+                <Form.Control
+                  type="text"
+                  onChange={usernameChanges}
+                  placeholder="Username"
+                  required
+                />
               </Form.Group>
               <Form.Group controlId="wdf-password-entry" className="mb-3">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
+                  placeholder="Password"
                   onChange={passwordChanges}
                   required
                 />
               </Form.Group>
               <Form.Group controlId="wdf-email-entry" className="mb-3">
                 <Form.Label>Email (Optional)</Form.Label>
-                <Form.Control type="text" onChange={emailChanges} />
+                <Form.Control
+                  type="text"
+                  onChange={emailChanges}
+                  placeholder="Email Address"
+                />
               </Form.Group>
               <Form.Group controlId="wdf-phone-entry" className="mb-3">
                 <Form.Label>Phone Number (Optional)</Form.Label>
-                <Form.Control type="text" onChange={phoneNumberChanges} />
+                <Form.Control
+                  type="text"
+                  onChange={phoneNumberChanges}
+                  placeholder="Phone Number"
+                />
               </Form.Group>
               <Form.Group controlId="wdf-role-select">
                 <Form.Label>Role (you can change this later)</Form.Label>

@@ -49,6 +49,7 @@ export default function ApiRecipeDetails() {
   const reviewDisabled = () => !currentUser || currentUser.role === "AUTHOR";
   const remixDisabled = () => !currentUser || currentUser.role === "REVIEWER";
 
+  //TODO: duplication
   const getReviewTooltip = () => {
     if (currentUser) {
       if (currentUser.role === "AUTHOR") {

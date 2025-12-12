@@ -65,6 +65,29 @@ export default function ApiRecipeDetails() {
     fetchRecipeDetails();
   }, [recipeId]);
 
+  const getReviewTooltip = () => {
+    if (currentUser) {
+      if (currentUser.role === "AUTHOR") {
+        return "Change your role to review this recipe";
+      } else {
+        return "Write a review for this recipe";
+      }
+    } else {
+      return "Only signed in users can review recipes";
+    }
+  };
+  const getRemixTooltip = () => {
+    if (currentUser) {
+      if (currentUser.role === "REVIEWER") {
+        return "Change your role to remix this recipe";
+      } else {
+        return "Make your own custom version of this recipe";
+      }
+    } else {
+      return "Only signed in users can remix recipes";
+    }
+  };
+
   return (
     <div className="wdf-details-container">
       <div className="wdf-details-top-row">
@@ -74,21 +97,33 @@ export default function ApiRecipeDetails() {
             <h1 className="wdf-details-title">{recipe?.strMeal}</h1>
             <FlexGap />
             <div className="wdf-details-buttons">
-              <Button
-                variant="primary"
-                className="me-2 ms-2"
-                disabled={!currentUser || currentUser.role === "AUTHOR"}
-                href={`/editor/review?apiRecipe=${recipeId}`}
+              <span
+                className="d-inline-block"
+                data-toggle="tooltip"
+                title={getRemixTooltip()}
               >
-                Review
-              </Button>
-              <Button
-                variant="warning"
-                disabled={!currentUser || currentUser.role === "REVIEWER"}
-                href={`/editor?apiRecipe=${recipeId}`}
+                <Button
+                  variant="warning"
+                  disabled={!currentUser || currentUser.role === "REVIEWER"}
+                  href={`/editor?apiRecipe=${recipeId}`}
+                >
+                  Remix
+                </Button>
+              </span>
+              <span
+                className="d-inline-block"
+                data-toggle="tooltip"
+                title={getReviewTooltip()}
               >
-                Remix
-              </Button>
+                <Button
+                  variant="primary"
+                  className="me-2 ms-2"
+                  disabled={!currentUser || currentUser.role === "AUTHOR"}
+                  href={`/editor/review?apiRecipe=${recipeId}`}
+                >
+                  Review
+                </Button>
+              </span>
             </div>
           </div>
           <div className="wdf-details-body">

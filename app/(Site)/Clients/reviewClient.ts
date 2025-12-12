@@ -32,13 +32,18 @@ export const getReviewById = async (reviewId: string) => {
   return response.data;
 };
 export const createReview = async (review: Review) => {
-  const response = await axiosWithCredentials.put(`${REVIEWS_API}`, review);
+  const response = await axiosWithCredentials.put(
+    `${REVIEWS_API}/create`,
+    review
+  );
   return response.data;
 };
 export const getReviewsForSomeRecipes = (recipeIds: string[]) => {
   return Promise.all(recipeIds.map((id) => getAllReviewsForApiRecipe(id)));
 };
 export const deleteReview = async (reviewId: string) => {
-  const response = await axiosWithCredentials.put(`${REVIEWS_API}/${reviewId}`);
+  const response = await axiosWithCredentials.put(
+    `${REVIEWS_API}/delete/${reviewId}`
+  );
   return response.data;
 };

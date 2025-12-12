@@ -131,16 +131,18 @@ export default function Editor() {
     );
   };
 
-  const instructionChanges = (e: any, instructionIndex: number) =>
-    setInstructions(
-      instructions.map((instruction: InstructionWithId, index) => {
+  const instructionChanges = (e: any, instructionIndex: number) => {
+    const updatedInstructions = instructions.map(
+      (instruction: InstructionWithId, index) => {
         if (instructionIndex === index) {
-          return e.target.value;
+          return { id: instruction.id, instruction: e.target.value };
         } else {
           return instruction;
         }
-      })
+      }
     );
+    setInstructions(updatedInstructions);
+  };
   const addNewInstruction = () =>
     setInstructions([...instructions, { id: uuidv4(), instruction: "" }]);
   const deleteInstruction = (instructionIndex: number) =>
@@ -308,11 +310,11 @@ export default function Editor() {
                               type="text"
                               as={"textarea"}
                               placeholder="Add instructions"
+                              value={instruction.instruction}
                               onChange={(e: any) =>
                                 instructionChanges(e, index)
                               }
                               required
-                              defaultValue={instruction.instruction}
                             />
                           </Card.Body>
                         </Card>

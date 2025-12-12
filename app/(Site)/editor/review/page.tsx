@@ -6,7 +6,13 @@ import * as recipeClient from "../../Clients/recipeClient";
 import * as reviewClient from "../../Clients/reviewClient";
 import { useEffect, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
-import { Button, FormControl, FormGroup, FormLabel } from "react-bootstrap";
+import {
+  Button,
+  Form,
+  FormControl,
+  FormGroup,
+  FormLabel,
+} from "react-bootstrap";
 import "../editorStyles.css";
 import { Review } from "../../UtilClasses/Types";
 import { useDispatch, useSelector } from "react-redux";
@@ -90,8 +96,9 @@ export default function ReviewEditor() {
   const titleChanges = (e: any) => setReviewTitle(e.target.value);
   const textChanges = (e: any) => setReviewText(e.target.value);
 
-  const publishReview = async () => {
-    if (currentUser) {
+  const publishReview = async (e: any) => {
+    e.preventDefault();
+    if (currentUser && reviewTitle !== "") {
       const reviewId = uuidv4();
       const author = { _id: currentUser._id, username: currentUser.username };
       const review: Review = {
@@ -116,39 +123,41 @@ export default function ReviewEditor() {
   return currentUser ? (
     <div>
       <h1 className="mb-4">Reviewing Recipe: {recipeTitle}</h1>
-      <FormGroup
-        className="d-flex align-items-baseline"
-        controlId="wdf-editor-review-stars"
-      >
-        <FormLabel className="wdf-editor-review-form-label me-3">
-          Stars:
-        </FormLabel>
-        {displayStars(stars)}
-      </FormGroup>
-      <FormGroup controlId="wdf-editor-review-title" className="mt-3">
-        <FormLabel className="wdf-editor-review-form-label">
-          Review Title
-        </FormLabel>
-        <FormControl
-          type="text"
-          onChange={titleChanges}
-          placeholder="Give your review a title"
-          required
-        />
-      </FormGroup>
-      <FormGroup controlId="wdf-editor-review-text" className="mt-3">
-        <FormLabel className="wdf-editor-review-form-label">Review</FormLabel>
-        <FormControl
-          as="textarea"
-          type="text"
-          placeholder="Write your review here"
-          rows={5}
-          onChange={textChanges}
-        />
-      </FormGroup>
-      <Button className="mt-3" onClick={publishReview}>
-        Publish Review
-      </Button>
+      <Form onSubmit={publishReview}>
+        <FormGroup
+          className="d-flex align-items-baseline"
+          controlId="wdf-editor-review-stars"
+        >
+          <FormLabel className="wdf-editor-review-form-label me-3">
+            Stars:
+          </FormLabel>
+          {displayStars(stars)}
+        </FormGroup>
+        <FormGroup controlId="wdf-editor-review-title" className="mt-3">
+          <FormLabel className="wdf-editor-review-form-label">
+            Review Title
+          </FormLabel>
+          <FormControl
+            type="text"
+            onChange={titleChanges}
+            placeholder="Give your review a title"
+            required
+          />
+        </FormGroup>
+        <FormGroup controlId="wdf-editor-review-text" className="mt-3">
+          <FormLabel className="wdf-editor-review-form-label">Review</FormLabel>
+          <FormControl
+            as="textarea"
+            type="text"
+            placeholder="Write your review here"
+            rows={5}
+            onChange={textChanges}
+          />
+        </FormGroup>
+        <Button className="mt-3" type="submit">
+          Publish Review
+        </Button>
+      </Form>
     </div>
   ) : (
     <h1>Sign in to write a review</h1>

@@ -169,20 +169,22 @@ export default function ProfilePage() {
                 </Button>
               ))}
           </div>
-          <div className="d-flex align-items-center gap-3">
-            <h4
-              onClick={() => setShowFollowers(true)}
-              className="wdf-profile-follow-stats wdf-cursor-pointer"
-            >
-              <b>{followers.length}</b> followers
-            </h4>
-            <h4
-              onClick={() => setShowFollowing(true)}
-              className="wdf-profile-follow-stats wdf-cursor-pointer"
-            >
-              <b>{following.length}</b> following
-            </h4>
-          </div>
+          {(!isYourProfile || currentUser) && (
+            <div className="d-flex align-items-center gap-3">
+              <h4
+                onClick={() => setShowFollowers(true)}
+                className="wdf-profile-follow-stats wdf-cursor-pointer"
+              >
+                <b>{followers.length}</b> followers
+              </h4>
+              <h4
+                onClick={() => setShowFollowing(true)}
+                className="wdf-profile-follow-stats wdf-cursor-pointer"
+              >
+                <b>{following.length}</b> following
+              </h4>
+            </div>
+          )}
         </div>
         {isYourProfile && (
           <div className="ms-4 me-3 d-none d-md-block">
@@ -226,6 +228,7 @@ export default function ProfilePage() {
                   recipes={authored}
                   setRecipes={setAuthored}
                   linkToFullPage={`/profile/authored?id=${profile._id}`}
+                  isYourProfile={isYourProfile}
                 />
               </Col>
             )}
@@ -236,6 +239,7 @@ export default function ProfilePage() {
                   reviews={reviews}
                   setReviews={setReviews}
                   linkToFullPage={`/profile/reviews?id=${profile._id}`}
+                  isYourProfile={isYourProfile}
                 />
               </Col>
             )}

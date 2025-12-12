@@ -6,7 +6,6 @@ import { Nav, NavItem, NavLink, Offcanvas } from "react-bootstrap";
 import { Path, paths } from "./TOC";
 import FlexGap from "../UtilClasses/FlexGap";
 import { useState } from "react";
-import SignInModal from "../../No longer using/SignInModal";
 import AccountButtons from "./AccountButtons";
 
 export default function TOCOffcanvas({
@@ -17,7 +16,6 @@ export default function TOCOffcanvas({
   handleClose: any;
 }) {
   const pathname = usePathname();
-  const [showModal, setShowModal] = useState(false);
 
   return (
     <Offcanvas show={show} onHide={handleClose} className="wdf-offcanvas-menu">
@@ -46,7 +44,6 @@ export default function TOCOffcanvas({
         <FlexGap />
         <AccountButtons className="wdf-offcanvas-button" />
       </Offcanvas.Body>
-      <SignInModal showSignIn={showModal} setShowSignIn={setShowModal} />
     </Offcanvas>
   );
 }

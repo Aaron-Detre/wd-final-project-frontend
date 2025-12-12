@@ -45,7 +45,8 @@ export default function Settings() {
   const roleChanges = (value: string) =>
     setUpdatedUser({ ...updatedUser, role: value });
 
-  const onSave = () => {
+  const onSave = (e: any) => {
+    e.preventDefault();
     if (updatedUser.username && updatedUser.password) {
       userClient.updateUser(updatedUser._id, updatedUser);
       dispatch(setCurrentUser(updatedUser));
@@ -68,7 +69,7 @@ export default function Settings() {
         <Col xl={4} sm={2} xs={1}></Col>
         <Col xl={4} sm={8} xs={10}>
           {/* //TODO: onSubmit?? */}
-          <Form className="w-100 mt-5">
+          <Form className="w-100 mt-5" onSubmit={onSave}>
             <Card>
               <Card.Header>Change Account Details</Card.Header>
               <Card.Body>
@@ -78,6 +79,7 @@ export default function Settings() {
                     type="text"
                     onChange={usernameChanges}
                     value={updatedUser?.username || ""}
+                    placeholder="Username"
                     required
                   />
                 </Form.Group>
@@ -87,23 +89,26 @@ export default function Settings() {
                     type="password"
                     onChange={passwordChanges}
                     value={updatedUser?.password || ""}
+                    placeholder="Password"
                     required
                   />
                 </Form.Group>
                 <Form.Group controlId="wdf-email-entry" className="mb-3">
-                  <Form.Label>Email</Form.Label>
+                  <Form.Label>Email (Optional)</Form.Label>
                   <Form.Control
                     type="text"
                     onChange={emailChanges}
                     value={updatedUser?.email || ""}
+                    placeholder="Email Address"
                   />
                 </Form.Group>
                 <Form.Group controlId="wdf-phone-entry" className="mb-3">
-                  <Form.Label>Phone Number</Form.Label>
+                  <Form.Label>Phone Number (Optional)</Form.Label>
                   <Form.Control
                     type="text"
                     onChange={phoneNumberChanges}
                     value={updatedUser?.phone || ""}
+                    placeholder="Phone Number"
                   />
                 </Form.Group>
 
@@ -145,7 +150,7 @@ export default function Settings() {
                 >
                   Cancel
                 </Button>
-                <Button variant="primary" type="submit" onClick={onSave}>
+                <Button variant="primary" type="submit">
                   Save
                 </Button>
               </Card.Footer>

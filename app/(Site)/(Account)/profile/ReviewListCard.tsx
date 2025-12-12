@@ -19,11 +19,13 @@ export default function ReviewListCard({
   reviews,
   setReviews,
   linkToFullPage,
+  isYourProfile,
 }: {
   title: string;
   reviews: Review[];
   setReviews: Function;
   linkToFullPage: string;
+  isYourProfile: boolean;
 }) {
   const handleDeleteClicked = async (reviewId: string) => {
     if (confirm("Are you sure you want to permanently delete this review?")) {
@@ -56,10 +58,12 @@ export default function ReviewListCard({
                       text={abbreviateText(review.text)}
                     />
                   </Link>
-                  <FaTrashAlt
-                    onClick={() => handleDeleteClicked(review._id)}
-                    className="fs-5 wdf-cursor-pointer"
-                  />
+                  {isYourProfile && (
+                    <FaTrashAlt
+                      onClick={() => handleDeleteClicked(review._id)}
+                      className="fs-5 wdf-cursor-pointer"
+                    />
+                  )}
                 </ListGroupItem>
               )
           )}

@@ -7,6 +7,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Form,
   FormControl,
   FormLabel,
 } from "react-bootstrap";
@@ -29,11 +30,12 @@ export default function SignIn() {
     username: string;
     password: string;
   }>({ username: "", password: "" });
+
   const signIn = async () => {
     const user = await userClient.signIn(credentials);
     if (user) {
       dispatch(setCurrentUser(user));
-      redirect("/"); //TODO: home or profile?
+      redirect("/");
     }
   };
   const usernameChanges = (e: any) => {
@@ -43,39 +45,49 @@ export default function SignIn() {
     setCredentials({ ...credentials, password: e.target.value });
   };
   const handleKeyDown = (e: any) => e.key === "Enter" && signIn();
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    if (credentials.username !== "" && credentials.password !== "") {
+      signIn();
+    }
+  };
 
   return (
     <div className="d-flex justify-content-center">
       <Card className="wdf-login-card mt-5">
         <CardHeader>Sign In</CardHeader>
-        <CardBody>
-          <FormLabel htmlFor="username-entry">Username</FormLabel>
-          <FormControl
-            id="username-entry"
-            type="text"
-            className="mb-3"
-            placeholder="Username"
-            onChange={usernameChanges}
-            onKeyDown={handleKeyDown}
-          />
-          <FormLabel htmlFor="password-entry">Password</FormLabel>
-          <FormControl
-            id="username-entry"
-            type="password"
-            placeholder="Password"
-            onChange={passwordChanges}
-            onKeyDown={handleKeyDown}
-          />
-        </CardBody>
-        <CardFooter className="d-flex">
-          <FlexGap />
-          <Link className="btn btn-secondary me-2" href="/">
-            Cancel
-          </Link>
-          <Button variant="primary" onClick={signIn}>
-            Sign In
-          </Button>
-        </CardFooter>
+        <Form onSubmit={handleSubmit}>
+          <CardBody>
+            <FormLabel htmlFor="username-entry">Username</FormLabel>
+            <FormControl
+              id="username-entry"
+              type="text"
+              className="mb-3"
+              placeholder="Username"
+              onChange={usernameChanges}
+              onKeyDown={handleKeyDown}
+              required
+            />
+            <FormLabel htmlFor="password-entry">Password</FormLabel>
+            <FormControl
+              id="password-entry"
+              type="password"
+              placeholder="Password"
+              onChange={passwordChanges}
+              onKeyDown={handleKeyDown}
+              required
+            />
+          </CardBody>
+          <CardFooter className="d-flex">
+            <FlexGap />
+            <Link className="btn btn-secondary me-2" href="/">
+              Cancel
+            </Link>
+            <Button variant="primary" type="submit">
+              Sign In
+            </Button>
+          </CardFooter>
+        </Form>
       </Card>
     </div>
   );

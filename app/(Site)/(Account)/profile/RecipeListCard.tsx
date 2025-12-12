@@ -11,11 +11,13 @@ export default function RecipeListCard({
   recipes,
   setRecipes,
   linkToFullPage,
+  isYourProfile,
 }: {
   title: string;
   recipes: Recipe[];
   setRecipes: Function;
   linkToFullPage: string;
+  isYourProfile: boolean;
 }) {
   const handleDeleteClicked = async (recipeId: string) => {
     if (confirm("Are you sure you want to permanently delete this recipe?")) {
@@ -41,10 +43,12 @@ export default function RecipeListCard({
                   >
                     <RecipeInfoCard title={recipe.recipeTitle} />
                   </Link>
-                  <FaTrashAlt
-                    onClick={() => handleDeleteClicked(recipe._id)}
-                    className="fs-5 wdf-cursor-pointer"
-                  />
+                  {isYourProfile && (
+                    <FaTrashAlt
+                      onClick={() => handleDeleteClicked(recipe._id)}
+                      className="fs-5 wdf-cursor-pointer"
+                    />
+                  )}
                 </ListGroupItem>
               )
           )}
