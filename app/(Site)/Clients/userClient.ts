@@ -80,3 +80,7 @@ export const filterUsersByName = async (name: string) => {
   const response = await axiosWithCredentials.get(`${USERS_API}?name=${name}`);
   return response.data;
 };
+export const deleteUser = async (userId: string) => {
+  const response = await axiosWithCredentials.delete(`${USERS_API}/${userId}`);
+  return response.data;
+};

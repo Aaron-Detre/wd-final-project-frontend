@@ -3,7 +3,7 @@
 
 //TODO: INSANE DUPLICATION!!!!
 
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as localRecipeClient from "../../../Clients/localRecipeClient";
 import { Button, Col, Image, Row } from "react-bootstrap";
@@ -14,7 +14,6 @@ import IngredientsCard from "../IngredientsCard";
 import ReviewsCard from "../ReviewsCard";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/(Site)/store";
-import { IoArrowBack } from "react-icons/io5";
 import BackButton from "../BackButton";
 import Link from "next/link";
 import FlexGap from "@/app/(Site)/UtilClasses/FlexGap";
@@ -27,7 +26,6 @@ export default function ApiRecipeDetails() {
     dispatch(setTitle("Recipe Details"));
   }, [dispatch]);
 
-  const fromSearch = useSearchParams().get("fromSearch");
   const { currentUser } = useSelector((state: RootState) => state.account);
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState<any>(null);
@@ -74,6 +72,15 @@ export default function ApiRecipeDetails() {
     }
   };
 
+  const isYourRecipe = () =>
+    recipe && currentUser && recipe.recipeAuthor._id === currentUser._id;
+  const handleDeleteClicked = async () => {
+    if (confirm("Are you sure you want to permanently delete this recipe?")) {
+      await localRecipeClient.deleteRecipe(recipe._id);
+      history.back();
+    }
+  };
+
   return (
     <div className="wdf-details-container">
       <div className="wdf-details-top-row">
@@ -86,30 +93,36 @@ export default function ApiRecipeDetails() {
               <span
                 className="d-inline-block"
                 data-toggle="tooltip"
-                title={getReviewTooltip()}
-              >
-                <Button
-                  variant="primary"
-                  className="me-2"
-                  disabled={reviewDisabled()}
-                  href={`/editor/review?localRecipe=${recipeId}`}
-                >
-                  Review
-                </Button>
-              </span>
-              <span
-                className="d-inline-block"
-                data-toggle="tooltip"
                 title={getRemixTooltip()}
               >
                 <Button
                   variant="warning"
+                  className="me-2"
                   disabled={remixDisabled()}
                   href={`/editor?localRecipe=${recipeId}`}
                 >
                   Remix
                 </Button>
               </span>
+              {isYourRecipe() ? (
+                <Button variant="danger" onClick={handleDeleteClicked}>
+                  Delete
+                </Button>
+              ) : (
+                <span
+                  className="d-inline-block"
+                  data-toggle="tooltip"
+                  title={getReviewTooltip()}
+                >
+                  <Button
+                    variant="primary"
+                    disabled={reviewDisabled()}
+                    href={`/editor/review?localRecipe=${recipeId}`}
+                  >
+                    Review
+                  </Button>
+                </span>
+              )}
             </div>
           </div>
           <div className="wdf-details-author">

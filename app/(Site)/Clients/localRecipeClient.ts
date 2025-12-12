@@ -31,3 +31,7 @@ export const createRecipe = async (recipe: Recipe) => {
   const response = await axiosWithCredentials.put(`${RECIPES_API}`, recipe);
   return response.data;
 };
+export const deleteRecipe = async (recipeId: string) => {
+  const response = await axiosWithCredentials.put(`${RECIPES_API}/${recipeId}`);
+  return response.data;
+};

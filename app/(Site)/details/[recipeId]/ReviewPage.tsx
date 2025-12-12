@@ -5,16 +5,18 @@ import { useEffect, useState } from "react";
 import * as localRecipeClient from "../../Clients/localRecipeClient";
 import * as recipeClient from "../../Clients/recipeClient";
 import * as reviewClient from "../../Clients/reviewClient";
-import { Card } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import Link from "next/link";
 import "./reviewStyles.css";
 import displayStars from "@/app/(Site)/UtilClasses/DisplayStars";
 import BackButton from "./BackButton";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../../reducer";
+import { RootState } from "../../store";
+import FlexGap from "../../UtilClasses/FlexGap";
 const defaultImage = "/images/plate.svg";
 
-export default function RecipeReview({
+export default function ReviewPage({
   isLocalRecipeReview,
 }: {
   isLocalRecipeReview: boolean;
@@ -23,6 +25,8 @@ export default function RecipeReview({
   useEffect(() => {
     dispatch(setTitle("Review"));
   }, [dispatch]);
+
+  const { currentUser } = useSelector((state: RootState) => state.account);
 
   const { recipeId, reviewId } = useParams();
   const [recipe, setRecipe] = useState<any>(null);
@@ -43,6 +47,15 @@ export default function RecipeReview({
     fetchRecipe();
     fetchReview();
   }, [recipeId, reviewId]);
+
+  const isYourReview = () =>
+    currentUser && review && currentUser._id === review.reviewAuthor._id;
+  const handleDeleteClicked = async () => {
+    if (confirm("Are you sure you want to permanently delete this review?")) {
+      await reviewClient.deleteReview(review._id);
+      history.back();
+    }
+  };
 
   return (
     <div className="wdf-review d-flex">
@@ -77,6 +90,13 @@ export default function RecipeReview({
             </Link>
           </span>
           {displayStars(review?.stars)}
+
+          <FlexGap />
+          {isYourReview() && (
+            <Button variant="danger" onClick={handleDeleteClicked}>
+              Delete
+            </Button>
+          )}
         </div>
         <p className="wdf-review-text">{review?.text}</p>
       </div>

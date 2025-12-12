@@ -38,3 +38,7 @@ export const createReview = async (review: Review) => {
 export const getReviewsForSomeRecipes = (recipeIds: string[]) => {
   return Promise.all(recipeIds.map((id) => getAllReviewsForApiRecipe(id)));
 };
+export const deleteReview = async (reviewId: string) => {
+  const response = await axiosWithCredentials.put(`${REVIEWS_API}/${reviewId}`);
+  return response.data;
+};

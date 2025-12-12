@@ -224,6 +224,7 @@ export default function ProfilePage() {
                 <RecipeListCard
                   title={getAuthoredCardTitle()}
                   recipes={authored}
+                  setRecipes={setAuthored}
                   linkToFullPage={`/profile/authored?id=${profile._id}`}
                 />
               </Col>
@@ -233,6 +234,7 @@ export default function ProfilePage() {
                 <ReviewListCard
                   title={getReviewsCardTitle()}
                   reviews={reviews}
+                  setReviews={setReviews}
                   linkToFullPage={`/profile/reviews?id=${profile._id}`}
                 />
               </Col>

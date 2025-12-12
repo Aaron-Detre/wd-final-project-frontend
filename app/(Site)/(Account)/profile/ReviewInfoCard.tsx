@@ -26,7 +26,7 @@ export default function ReviewInfoCard({
         <div className="wdf-info-card-body-header wdf-text-decoration-none">
           <span>{title}</span>
         </div>
-        <p>{text}</p>
+        <p className="wdf-color-black">{text}</p>
       </div>
     </div>
   );
