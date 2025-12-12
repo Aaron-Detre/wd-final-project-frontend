@@ -146,14 +146,14 @@ export default function ApiRecipeDetails() {
             </Row>
           </div>
         </Col>
-        {hasImage && (
+        {/* {hasImage && (
           <Col xs={4} className="wdf-details-right">
             <Image
               src={recipe?.strMealThumb ? recipe.strMealThumb : defaultImage}
               className="wdf-details-image"
             />
           </Col>
-        )}
+        )} */}
       </div>
       <div className="wdf-details-bottom-row">
         <ReviewsCard isReviewOfLocalRecipe={true} />
