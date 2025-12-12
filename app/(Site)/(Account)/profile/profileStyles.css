@@ -9,3 +9,21 @@
 .wdf-profile-following-modal {
   margin-top: 10%;
 }
+
+.wdf-profile-header-right {
+  position: absolute;
+  right: 0;
+}
+
+.wdf-profile-role {
+  font-size: 20;
+}
+
+@media (max-width: 550px) {
+  .wdf-profile-follow-stats {
+    font-size: 18;
+  }
+  .wdf-profile-role {
+    font-size: 16;
+  }
+}

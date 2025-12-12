@@ -5,12 +5,14 @@ import * as reviewClient from "../Clients/reviewClient";
 import * as recipeClient from "../Clients/recipeClient";
 import SearchBar from "./SearchBar";
 import { useSearchParams } from "next/navigation";
-import { Button, Image, OverlayTrigger, Popover } from "react-bootstrap";
+import { Image, OverlayTrigger, Popover, Table } from "react-bootstrap";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import "../(Account)/profile/infoCardStyles.css";
-import { Recipe, Review } from "../UtilClasses/Types";
+import { Review } from "../UtilClasses/Types";
+import ReviewSummaryPopover from "./ReviewSummaryPopover";
+import FlexGap from "../UtilClasses/FlexGap";
 
-export default function SearchResultsPage() {
+export default function RecipeSearchResultsPage() {
   const [recipes, setRecipes] = useState<any[]>([]);
   const [apiRecipeReviews, setApiRecipeReviews] = useState<Review[][]>([]);
   const criteria = useSearchParams().get("criteria");
@@ -22,7 +24,6 @@ export default function SearchResultsPage() {
   const fetchReviews = async () => {
     const ids = recipes.map((recipe) => recipe.idMeal);
     const reviews = await reviewClient.getReviewsForSomeRecipes(ids);
-    console.log(JSON.stringify(reviews));
     setApiRecipeReviews(reviews);
   };
   useEffect(() => {
@@ -33,38 +34,18 @@ export default function SearchResultsPage() {
     if (criteria) searchApiRecipes(criteria);
   }, [criteria]);
 
-  const popover = (recipeDetails: any) => {
-    const reviewsForRecipe = apiRecipeReviews
-      .filter((reviews: Review[]) =>
-        reviews.some(
-          (review: Review) => review.apiRecipeId === recipeDetails.idMeal
-        )
-      )
-      ?.at(0);
-    const avg = (reviews: Review[]) => {
-      const stars = reviews.map((review) => review.stars);
-      if (stars && stars.length !== 0) {
-        let sum = 0;
-        stars.forEach((star) => (sum += star));
-        return (sum / stars.length).toFixed(2);
-      } else {
-        return "N/A";
-      }
-    };
-    return (
-      <Popover>
-        <Popover.Body>
-          {/* // # reviews // avg review score // # remixes? */}
-          <h1># Reviews: {reviewsForRecipe?.length}</h1>
-          <h1>Avg stars: {avg(reviewsForRecipe ?? [])}</h1>
-        </Popover.Body>
-      </Popover>
-    );
-  };
+  const popover = (recipeDetails: any, triggerProps: any) => (
+    <ReviewSummaryPopover
+      triggerProps={triggerProps}
+      isApiRecipeReview={true}
+      recipeReviews={apiRecipeReviews}
+      recipeDetails={recipeDetails}
+    />
+  );
 
   return (
     <div className="wdf-search-container">
-      <SearchBar />
+      <SearchBar placeholder="Search For Recipes" />
       {recipes.length > 0 ? (
         <div className="wdf-search-results">
           {recipes.map((recipe) => (
@@ -82,18 +63,23 @@ export default function SearchResultsPage() {
                   </div>
                 </Link>
                 <div className="wdf-info-card-body">
-                  <div className="wdf-info-card-body-header ">
+                  <div className="wdf-info-card-body-header">
                     <Link
                       href={`/details/${recipe.idMeal}/api?fromSearch=true`}
                     >
-                      <span>{recipe.strMeal}</span>
+                      <span className="wdf-info-card-title">
+                        {recipe.strMeal}
+                      </span>
                     </Link>
+                    <FlexGap />
                     <OverlayTrigger
                       trigger="click"
                       placement="top"
-                      overlay={popover(recipe)}
+                      overlay={(triggerProps: any) =>
+                        popover(recipe, triggerProps)
+                      }
                     >
-                      <IoMdInformationCircleOutline className="float-end fs-3 wdf-cursor-pointer" />
+                      <IoMdInformationCircleOutline className="wdf-info-card-review-summary-button  wdf-cursor-pointer" />
                     </OverlayTrigger>
                   </div>
                 </div>

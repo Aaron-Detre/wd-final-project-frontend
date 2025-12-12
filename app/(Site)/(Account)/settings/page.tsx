@@ -46,8 +46,10 @@ export default function Settings() {
     setUpdatedUser({ ...updatedUser, role: value });
 
   const onSave = () => {
-    userClient.updateUser(updatedUser._id, updatedUser);
-    dispatch(setCurrentUser(updatedUser));
+    if (updatedUser.username && updatedUser.password) {
+      userClient.updateUser(updatedUser._id, updatedUser);
+      dispatch(setCurrentUser(updatedUser));
+    }
   };
 
   const getDefaultCheckedRole = (roleCheckbox: string) => {
@@ -75,7 +77,7 @@ export default function Settings() {
                   <Form.Control
                     type="text"
                     onChange={usernameChanges}
-                    defaultValue={updatedUser?.username}
+                    value={updatedUser?.username || ""}
                     required
                   />
                 </Form.Group>
@@ -84,7 +86,7 @@ export default function Settings() {
                   <Form.Control
                     type="password"
                     onChange={passwordChanges}
-                    defaultValue={updatedUser?.password}
+                    value={updatedUser?.password || ""}
                     required
                   />
                 </Form.Group>
@@ -93,7 +95,7 @@ export default function Settings() {
                   <Form.Control
                     type="text"
                     onChange={emailChanges}
-                    defaultValue={updatedUser?.email}
+                    value={updatedUser?.email || ""}
                   />
                 </Form.Group>
                 <Form.Group controlId="wdf-phone-entry" className="mb-3">
@@ -101,7 +103,7 @@ export default function Settings() {
                   <Form.Control
                     type="text"
                     onChange={phoneNumberChanges}
-                    defaultValue={updatedUser?.phone}
+                    value={updatedUser?.phone || ""}
                   />
                 </Form.Group>
 
@@ -112,7 +114,7 @@ export default function Settings() {
                     name="role-select"
                     id="wdf-recipe-author-radio"
                     label="Recipe Author"
-                    onClick={() => roleChanges("AUTHOR")}
+                    onChange={() => roleChanges("AUTHOR")}
                     checked={getDefaultCheckedRole("AUTHOR")}
                   />
                   <Form.Check
@@ -120,7 +122,7 @@ export default function Settings() {
                     name="role-select"
                     id="wdf-recipe-reviewer-radio"
                     label="Recipe Reviewer"
-                    onClick={() => roleChanges("REVIEWER")}
+                    onChange={() => roleChanges("REVIEWER")}
                     checked={getDefaultCheckedRole("REVIEWER")}
                   />
                   <Form.Check
@@ -128,7 +130,7 @@ export default function Settings() {
                     name="role-select"
                     id="wdf-both-radio"
                     label="Both"
-                    onClick={() => roleChanges("BOTH")}
+                    onChange={() => roleChanges("BOTH")}
                     checked={getDefaultCheckedRole("BOTH")}
                   />
                 </Form.Group>

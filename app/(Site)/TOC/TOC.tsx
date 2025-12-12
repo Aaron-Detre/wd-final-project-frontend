@@ -10,7 +10,7 @@ import AccountButtons from "./AccountButtons";
 export type Path = { link: string; label: string };
 export const paths: Path[] = [
   { link: "/home", label: "Home" },
-  { link: "/search", label: "Search" },
+  { link: "/search?tab=recipes", label: "Search" },
   { link: "/details", label: "Details" },
   { link: "/profile", label: "Profile" },
   { link: "/editor", label: "Editor" },

@@ -21,6 +21,8 @@
   font-size: large;
   font-weight: 500;
   color: black;
+  display: flex;
+  align-items: center;
 }
 .wdf-info-card-body-text {
   font-size: small;
@@ -37,8 +39,8 @@
     width: fit-content;
 
     .wdf-info-card-image-thumbnail {
-      width: 250px;
-      height: 250px;
+      width: 230px;
+      height: 230px;
       padding: 0;
       border-bottom: 4px solid black;
     }
@@ -46,11 +48,67 @@
 
   .wdf-info-card-body {
     margin: 1%;
-    width: 250px;
+    width: 230px;
 
     .wdf-info-card-body-header {
       margin: 5px;
       margin-left: 5%;
+    }
+  }
+}
+
+.wdf-info-card-review-summary-button {
+  float: right;
+  font-size: 28;
+}
+
+@media (max-width: 580px) {
+  .wdf-vertical {
+    .wdf-info-card-body {
+      width: 200px !important;
+    }
+    .wdf-info-card-image-thumbnail {
+      width: 200px !important;
+      height: 200px !important;
+    }
+    .wdf-info-card-title {
+      font-size: 17;
+    }
+    .wdf-info-card-review-summary-button {
+      font-size: 24;
+    }
+  }
+}
+
+@media (max-width: 490px) {
+  .wdf-vertical {
+    .wdf-info-card-body {
+      width: 170px !important;
+    }
+    .wdf-info-card-image-thumbnail {
+      width: 170px !important;
+      height: 170px !important;
+    }
+    .wdf-info-card-title {
+      font-size: 16;
+    }
+  }
+}
+
+@media (max-width: 415px) {
+  .wdf-vertical {
+    .wdf-info-card-body {
+      width: 150px !important;
+    }
+    .wdf-info-card-image-thumbnail {
+      width: 150px !important;
+      height: 150px !important;
+    }
+    .wdf-info-card-title {
+      font-size: 14;
+    }
+    .wdf-info-card-review-summary-button {
+      font-size: 22;
     }
   }
 }

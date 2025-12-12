@@ -1,20 +1,56 @@
 "use client";
-import { useSearchParams } from "next/navigation";
-import SearchResultsPage from "./SearchResultsPage";
-import DefaultSearchPage from "./DefaultSearchPage";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import "./searchStyles.css";
 import { useDispatch } from "react-redux";
 import { setTitle } from "../reducer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Tab, Tabs } from "react-bootstrap";
+import RecipeSearchResultsPage from "./RecipeSearchResultsPage";
+import DefaultSearchPage from "./DefaultSearchPage";
+import LocalRecipeSearchResultsPage from "./LocalRecipeSearchResultsPage";
 
 export default function Search() {
   const dispatch = useDispatch();
+  // const pathname = usePathname();
+  // const basePathname = pathname.split("?")[0];
+  const router = useRouter();
   useEffect(() => {
     dispatch(setTitle("Search"));
   }, [dispatch]);
 
   const searchParams = useSearchParams();
   const search = searchParams.get("criteria");
+  const tab = searchParams.get("tab");
 
-  return search ? <SearchResultsPage /> : <DefaultSearchPage />;
+  const [key, setKey] = useState(tab ?? "recipes");
+  const handleTabSelect = (k: any) => {
+    setKey(k);
+    router.push(`/search?tab=${k}`);
+  };
+
+  return (
+    <Tabs activeKey={key} onSelect={handleTabSelect} className="mb-3">
+      <Tab eventKey="recipes" title="Recipes">
+        {search ? (
+          <RecipeSearchResultsPage />
+        ) : (
+          <DefaultSearchPage placeholder="Search For Recipes" />
+        )}
+      </Tab>
+      <Tab eventKey="localRecipes" title="User Recipes">
+        {search ? (
+          <LocalRecipeSearchResultsPage />
+        ) : (
+          <DefaultSearchPage placeholder="Search For Recipes" />
+        )}
+      </Tab>
+      {/* <Tab eventKey="users" title="Users">
+        {search ? (
+          <UserSearchResultsPage />
+        ) : (
+          <DefaultSearchPage placeholder="Search For Other Users" />
+        )}
+      </Tab> */}
+    </Tabs>
+  );
 }

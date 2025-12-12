@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button, Col, FormControl, InputGroup } from "react-bootstrap";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 
-export default function SearchBar() {
+export default function SearchBar({ placeholder }: { placeholder: string }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("tab");
   const [query, setQuery] = useState("");
   const onSearchQueryChanges = (e: any) => setQuery(e.target.value);
-  const searchRoute = `/search?criteria=${query}`;
+  const searchRoute = `/search?tab=${tab}&criteria=${query}`;
   const handleKeyDown = (e: any) =>
     e.key === "Enter" && router.push(searchRoute);
 
@@ -20,7 +22,7 @@ export default function SearchBar() {
           <FaMagnifyingGlass />
         </InputGroupText>
         <FormControl
-          placeholder="Search For Recipes"
+          placeholder={placeholder}
           onChange={onSearchQueryChanges}
           onKeyDown={handleKeyDown}
         />

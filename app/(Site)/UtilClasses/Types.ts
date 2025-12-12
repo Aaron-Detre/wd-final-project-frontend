@@ -5,6 +5,8 @@ export type User = {
   password: string;
   role: string;
   following: string[];
+  email?: string;
+  phone?: string;
 };
 export type Recipe = {
   _id: string;

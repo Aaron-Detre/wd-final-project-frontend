@@ -21,9 +21,6 @@ import FlexGap from "@/app/(Site)/UtilClasses/FlexGap";
 import { setTitle } from "@/app/(Site)/reducer";
 const defaultImage = "/images/plate.svg";
 
-// const firstLetterToUppercase = (str: string) =>
-//   str.charAt(0).toUpperCase() + str.slice(1);
-
 export default function ApiRecipeDetails() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -51,33 +48,68 @@ export default function ApiRecipeDetails() {
     fetchRecipeDetails();
   }, [recipeId]);
 
+  const reviewDisabled = () => !currentUser || currentUser.role === "AUTHOR";
+  const remixDisabled = () => !currentUser || currentUser.role === "REVIEWER";
+
+  const getReviewTooltip = () => {
+    if (currentUser) {
+      if (currentUser.role === "AUTHOR") {
+        return "Change your role to review this recipe";
+      } else {
+        return "Write a review for this recipe";
+      }
+    } else {
+      return "Only signed in users can review recipes";
+    }
+  };
+  const getRemixTooltip = () => {
+    if (currentUser) {
+      if (currentUser.role === "REVIEWER") {
+        return "Change your role to remix this recipe";
+      } else {
+        return "Make your own custom version of this recipe";
+      }
+    } else {
+      return "Only signed in users can remix recipes";
+    }
+  };
+
   return (
     <div className="wdf-details-container">
       <div className="wdf-details-top-row">
         <Col xs={hasImage ? 8 : 12} className="wdf-details-left">
           <div className="d-flex align-items-center">
             <BackButton />
-            <h1 className="wdf-details-title">
-              {fromSearch && <IoArrowBack />}
-              {recipe?.recipeTitle}
-            </h1>
+            <h1 className="wdf-details-title">{recipe?.recipeTitle}</h1>
             <FlexGap />
             <div className={hasImage ? "wdf-details-buttons" : ""}>
-              <Button
-                variant="primary"
-                className="me-2"
-                disabled={!currentUser || currentUser.role === "AUTHOR"}
-                href={`/editor/review?localRecipe=${recipeId}`}
+              <span
+                className="d-inline-block"
+                data-toggle="tooltip"
+                title={getReviewTooltip()}
               >
-                Review
-              </Button>
-              <Button
-                variant="warning"
-                disabled={!currentUser || currentUser.role === "REVIEWER"}
-                href={`/editor?localRecipe=${recipeId}`}
+                <Button
+                  variant="primary"
+                  className="me-2"
+                  disabled={reviewDisabled()}
+                  href={`/editor/review?localRecipe=${recipeId}`}
+                >
+                  Review
+                </Button>
+              </span>
+              <span
+                className="d-inline-block"
+                data-toggle="tooltip"
+                title={getRemixTooltip()}
               >
-                Remix
-              </Button>
+                <Button
+                  variant="warning"
+                  disabled={remixDisabled()}
+                  href={`/editor?localRecipe=${recipeId}`}
+                >
+                  Remix
+                </Button>
+              </span>
             </div>
           </div>
           <div className="wdf-details-author">

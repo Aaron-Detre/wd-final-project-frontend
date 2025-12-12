@@ -5,16 +5,14 @@ import { HiCog } from "react-icons/hi2";
 import FlexGap from "../../UtilClasses/FlexGap";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import UserListCard from "./UserList";
 import { User } from "../../UtilClasses/Types";
 import * as userClient from "../../Clients/userClient";
 import { useEffect, useState } from "react";
 import RecipeListCard from "./RecipeListCard";
 import { redirect, usePathname } from "next/navigation";
 import ReviewListCard from "./ReviewListCard";
-import { Button, Card, Col, Modal, Row } from "react-bootstrap";
+import { Button, Col, Modal, Row } from "react-bootstrap";
 import "./profileStyles.css";
-import UserInfoCard from "./UserInfoCard";
 import UserList from "./UserList";
 import { setTitle } from "../../reducer";
 
@@ -154,49 +152,67 @@ export default function ProfilePage() {
   return (
     <div className="ms-3">
       <div className="wdf-profile-header d-flex align-items-baseline">
-        <h1 className="me-2">
-          {username !== "" ? username : "Sign in to see your profile"}
-        </h1>
-        <h2 className="fs-5 me-4 wdf-text-decoration-none wdf-text-dark-gray">
-          {role}
-        </h2>
-        {!isYourProfile &&
-          (doesCurrentUserFollowProfile ? (
-            <Button onClick={unfollowProfile}>Unfollow</Button>
-          ) : (
-            <Button onClick={followProfile} disabled={!currentUser}>
-              Follow
-            </Button>
-          ))}
+        <div>
+          <div className="d-md-flex d-block align-items-baseline">
+            <h1 className="me-2">
+              {username !== "" ? username : "Sign in to see your profile"}
+            </h1>
+            <h2 className="wdf-profile-role me-4 wdf-text-decoration-none wdf-text-dark-gray">
+              {role}
+            </h2>
+            {!isYourProfile &&
+              (doesCurrentUserFollowProfile ? (
+                <Button onClick={unfollowProfile}>Unfollow</Button>
+              ) : (
+                <Button onClick={followProfile} disabled={!currentUser}>
+                  Follow
+                </Button>
+              ))}
+          </div>
+          <div className="d-flex align-items-center gap-3">
+            <h4
+              onClick={() => setShowFollowers(true)}
+              className="wdf-profile-follow-stats wdf-cursor-pointer"
+            >
+              <b>{followers.length}</b> followers
+            </h4>
+            <h4
+              onClick={() => setShowFollowing(true)}
+              className="wdf-profile-follow-stats wdf-cursor-pointer"
+            >
+              <b>{following.length}</b> following
+            </h4>
+          </div>
+        </div>
+        {isYourProfile && (
+          <div className="ms-4 me-3 d-none d-md-block">
+            {(currentUser?.email || currentUser?.phone) && (
+              <div>
+                {currentUser.email && <h4>email: {currentUser.email}</h4>}
+                {currentUser.phone && <h4>phone: {currentUser.phone}</h4>}
+              </div>
+            )}
+          </div>
+        )}
         <FlexGap />
         {isYourProfile && currentUser && (
-          <Link
-            href="/settings"
-            className="d-flex wdf-text-decoration-none text-black align-items-center me-3"
-          >
-            <HiCog className="fs-1" /> <h4>Settings</h4>
-          </Link>
+          <div>
+            <Link
+              href="/settings"
+              className="d-flex wdf-text-decoration-none text-black align-items-center me-3"
+            >
+              <HiCog className="fs-1 mb-2" /> <h4>Settings</h4>
+            </Link>
+            {isYourProfile && role !== "REVIEWER" && (
+              <Button href="/editor">+ Recipe</Button>
+            )}
+          </div>
         )}
       </div>
       {/* -------------------------------------------------------------------------------- */}
       {currentUser && (
         <div className="d-flex gap-3">
-          <h4
-            onClick={() => setShowFollowers(true)}
-            className="wdf-cursor-pointer"
-          >
-            <b>{followers.length}</b> followers
-          </h4>
-          <h4
-            onClick={() => setShowFollowing(true)}
-            className="wdf-cursor-pointer"
-          >
-            <b>{following.length}</b> following
-          </h4>
           <FlexGap />
-          {isYourProfile && role !== "REVIEWER" && (
-            <Button href="/editor">+ Recipe</Button>
-          )}
         </div>
       )}
       {/* -------------------------------------------------------------------------------- */}
