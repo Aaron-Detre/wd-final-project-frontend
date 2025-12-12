@@ -89,8 +89,7 @@ export default function ReviewPage({
               {review?.reviewAuthor.username}
             </Link>
           </span>
-          {displayStars(review?.stars)}
-
+          <div>{displayStars(review?.stars)}</div>
           <FlexGap />
           {isYourReview() && (
             <Button
