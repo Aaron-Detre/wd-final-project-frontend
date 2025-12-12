@@ -16,7 +16,7 @@ export default function RecipeListCard({
   title: string;
   recipes: Recipe[];
   setRecipes: Function;
-  linkToFullPage: string;
+  linkToFullPage?: string;
   isYourProfile: boolean;
 }) {
   const handleDeleteClicked = async (recipeId: string) => {
@@ -32,7 +32,7 @@ export default function RecipeListCard({
         <ListGroup className="mb-2">
           {recipes.map(
             (recipe: Recipe, index: number) =>
-              index < 5 && (
+              (!linkToFullPage || index < 5) && (
                 <ListGroupItem
                   key={recipe._id}
                   className="d-flex wdf-info-card-hover"
@@ -53,7 +53,7 @@ export default function RecipeListCard({
               )
           )}
         </ListGroup>
-        {recipes.length > 5 && (
+        {linkToFullPage && recipes.length > 5 && (
           <div className="d-flex">
             <FlexGap />
             <Button variant="primary" href={linkToFullPage}>

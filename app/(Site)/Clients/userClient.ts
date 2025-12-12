@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { User } from "../UtilClasses/Types";
 const axiosWithCredentials = axios.create({ withCredentials: true });
 
@@ -11,15 +11,26 @@ export const profile = async () => {
   return response.data;
 };
 export const signIn = async (credentials: any) => {
-  const response = await axiosWithCredentials.post(
-    `${USERS_API}/signIn`,
-    credentials
-  );
-  return response.data;
+  try {
+    const response = await axiosWithCredentials.post(
+      `${USERS_API}/signIn`,
+      credentials
+    );
+    return response.data;
+  } catch (AxiosError) {
+    alert("Incorrect username or password");
+  }
 };
 export const signUp = async (user: any) => {
-  const response = await axiosWithCredentials.post(`${USERS_API}/signUp`, user);
-  return response.data;
+  try {
+    const response = await axiosWithCredentials.post(
+      `${USERS_API}/signUp`,
+      user
+    );
+    return response.data;
+  } catch (AxiosError) {
+    alert("That username is already taken. Try a different username.");
+  }
 };
 
 export const signOut = async () => {

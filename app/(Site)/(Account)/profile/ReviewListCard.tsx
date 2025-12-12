@@ -24,7 +24,7 @@ export default function ReviewListCard({
   title: string;
   reviews: Review[];
   setReviews: Function;
-  linkToFullPage: string;
+  linkToFullPage?: string;
   isYourProfile: boolean;
 }) {
   const handleDeleteClicked = async (reviewId: string) => {
@@ -40,7 +40,7 @@ export default function ReviewListCard({
         <ListGroup className="mb-2">
           {reviews.map(
             (review: Review, index: number) =>
-              index < 5 && (
+              (!linkToFullPage || index < 5) && (
                 <ListGroupItem
                   key={review._id}
                   className="d-flex wdf-info-card-hover"
@@ -68,7 +68,7 @@ export default function ReviewListCard({
               )
           )}
         </ListGroup>
-        {reviews.length > 5 && (
+        {reviews.length > 5 && linkToFullPage && (
           <div className="d-flex">
             <FlexGap />
             <Button variant="primary" href={linkToFullPage}>

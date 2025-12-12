@@ -41,7 +41,9 @@ export default function SignUp() {
   const signUp = async (e: any) => {
     e.preventDefault();
     const signedUp = await userClient.signUp(newUser);
-    dispatch(setCurrentUser(signedUp));
+    if (signedUp) {
+      dispatch(setCurrentUser(signedUp));
+    }
   };
 
   useEffect(() => {
