@@ -82,7 +82,7 @@ export default function ReviewPage({
           </Card.Body>
         </Card>
         <h1 className="wdf-review-title">{review?.reviewTitle}</h1>
-        <div className="d-flex align-items-center">
+        <div className="d-block d-md-flex align-items-center">
           <span className="wdf-review-author">
             By{" "}
             <Link href={`/profile/${review?.reviewAuthor._id}`}>
@@ -93,7 +93,11 @@ export default function ReviewPage({
 
           <FlexGap />
           {isYourReview() && (
-            <Button variant="danger" onClick={handleDeleteClicked}>
+            <Button
+              variant="danger"
+              className="mt-2"
+              onClick={handleDeleteClicked}
+            >
               Delete
             </Button>
           )}
