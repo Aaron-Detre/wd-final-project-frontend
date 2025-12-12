@@ -8,6 +8,7 @@ import { Tab, Tabs } from "react-bootstrap";
 import RecipeSearchResultsPage from "./RecipeSearchResultsPage";
 import DefaultSearchPage from "./DefaultSearchPage";
 import LocalRecipeSearchResultsPage from "./LocalRecipeSearchResultsPage";
+import UserSearchResultsPage from "./UserSearchResultsPage";
 
 export default function Search() {
   const dispatch = useDispatch();
@@ -44,13 +45,13 @@ export default function Search() {
           <DefaultSearchPage placeholder="Search For Recipes" />
         )}
       </Tab>
-      {/* <Tab eventKey="users" title="Users">
+      <Tab eventKey="users" title="Users">
         {search ? (
           <UserSearchResultsPage />
         ) : (
           <DefaultSearchPage placeholder="Search For Other Users" />
         )}
-      </Tab> */}
+      </Tab>
     </Tabs>
   );
 }

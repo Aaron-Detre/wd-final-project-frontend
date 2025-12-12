@@ -76,3 +76,7 @@ export const unfollowUser = async (unfollowing: string, unfollowee: string) => {
   );
   return response.data;
 };
+export const filterUsersByName = async (name: string) => {
+  const response = await axiosWithCredentials.get(`${USERS_API}?name=${name}`);
+  return response.data;
+};

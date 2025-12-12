@@ -6,11 +6,9 @@ const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 const RECIPES_API = `${HTTP_SERVER}/api/recipes`;
 
 export const filterRecipesByTitle = async (query: string) => {
-  console.log("HERE");
   const response = await axiosWithCredentials.get(
     `${RECIPES_API}?title=${query}`
   );
-  console.log(JSON.stringify(response.data));
   return response.data;
 };
 export const getRecipeById = async (recipeId: string) => {

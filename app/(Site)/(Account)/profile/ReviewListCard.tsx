@@ -31,9 +31,11 @@ export default function ReviewListCard({
                 <ListGroupItem
                   key={review._id}
                   action
-                  href={`/details/${review.apiRecipeId ? "api" : "local"}/${
+                  href={`/details/${
                     review.apiRecipeId || review.localRecipeId
-                  }/review/${review._id}`}
+                  }/${review.apiRecipeId ? "api" : "local"}/review/${
+                    review._id
+                  }`}
                 >
                   <ReviewInfoCard
                     title={review.reviewTitle}
