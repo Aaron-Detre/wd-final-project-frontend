@@ -116,7 +116,7 @@ export default function Home() {
               <Card.Title className="mt-1">
                 Recent{" "}
                 {currentUser
-                  ? "recipes from accounts you follow"
+                  ? "recipes from you and accounts you follow"
                   : "User-Created Recipes"}
               </Card.Title>
             </Card.Header>
@@ -166,7 +166,7 @@ export default function Home() {
               <Card.Title className="mt-1">
                 Recent{" "}
                 {currentUser
-                  ? "reviews from accounts you follow"
+                  ? "reviews from you and accounts you follow"
                   : "Recipe Reviews"}
               </Card.Title>
             </Card.Header>
