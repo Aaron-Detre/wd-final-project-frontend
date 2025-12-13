@@ -65,14 +65,18 @@ export default function ReviewPage({
       <div className="wdf-review-content">
         <Card
           as={Link}
-          href={`/details/${recipe?._id}/${
-            isLocalRecipeReview ? "local" : "api"
-          }`}
+          href={`/details/${
+            isLocalRecipeReview ? recipe?._id : recipe?.idMeal
+          }/${isLocalRecipeReview ? "local" : "api"}`}
           className="wdf-review-recipe-card shadow"
         >
           {/* // TODO: HEADER? */}
           <Card.Img
-            src={recipe?.strMealThumb ?? defaultImage}
+            src={
+              isLocalRecipeReview
+                ? recipe?.img ?? defaultImage
+                : recipe?.strMealThumb
+            }
             className="wdf-review-recipe-image"
           />
           <Card.Body>

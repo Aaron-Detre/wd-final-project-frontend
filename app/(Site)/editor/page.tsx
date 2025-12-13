@@ -184,6 +184,7 @@ export default function Editor() {
   };
 
   //BONUS TODO: drag and drop https://docs.dndkit.com/presets/sortable
+  //BONUS TODO: ADD CHECK FOR SCALABLE RECIPE ON INGREDIENTS WHICH SWITCHES MEASURE TO { AMOUNT: NUMBER, UNIT: STRING }
   return currentUser ? (
     currentUser.role !== "REVIEWER" ? (
       <div>

@@ -145,7 +145,7 @@ export default function ApiRecipeDetails() {
         </Col>
       </div>
       <div className="wdf-details-bottom-row">
-        <ReviewsCard isReviewOfLocalRecipe={false} />
+        <ReviewsCard isReviewOfApiRecipe={true} />
       </div>
     </div>
   );

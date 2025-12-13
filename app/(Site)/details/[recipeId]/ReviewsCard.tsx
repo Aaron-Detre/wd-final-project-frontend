@@ -11,39 +11,29 @@ import {
   Row,
 } from "react-bootstrap";
 import { useParams } from "next/navigation";
-
-import * as localRecipeClient from "../../Clients/localRecipeClient";
-import * as recipeClient from "../../Clients/recipeClient";
 import * as reviewClient from "../../Clients/reviewClient";
 import Link from "next/link";
 import { Review } from "../../UtilClasses/Types";
 import displayStars from "../../UtilClasses/DisplayStars";
 
 export default function ReviewsCard({
-  isReviewOfLocalRecipe,
+  isReviewOfApiRecipe,
 }: {
-  isReviewOfLocalRecipe: boolean;
+  isReviewOfApiRecipe: boolean;
 }) {
   const [reviews, setReviews] = useState<any[]>([]);
-  const [recipe, setRecipe] = useState<any>(null);
   const { recipeId } = useParams();
 
   const fetchAllReviewsForRecipe = async (rid: string) => {
-    const reviewsForRecipe = isReviewOfLocalRecipe
-      ? await reviewClient.getAllReviewsForLocalRecipe(rid)
-      : await reviewClient.getAllReviewsForApiRecipe(rid);
+    const reviewsForRecipe = await reviewClient.getAllReviewsForRecipe(
+      rid,
+      isReviewOfApiRecipe
+    );
     setReviews(reviewsForRecipe);
-  };
-  const fetchReviewedRecipe = async (rid: string) => {
-    const reviewedRecipe = isReviewOfLocalRecipe
-      ? await localRecipeClient.getRecipeById(rid)
-      : await recipeClient.getRecipeById(rid);
-    setRecipe(reviewedRecipe);
   };
   useEffect(() => {
     if (recipeId) {
       fetchAllReviewsForRecipe(recipeId as string);
-      fetchReviewedRecipe(recipeId as string);
     }
   }, [recipeId]);
 

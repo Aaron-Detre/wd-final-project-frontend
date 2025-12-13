@@ -5,15 +5,12 @@ const axiosWithCredentials = axios.create({ withCredentials: true });
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 const REVIEWS_API = `${HTTP_SERVER}/api/reviews`;
 
-export const getAllReviewsForApiRecipe = async (recipeId: string) => {
+export const getAllReviewsForRecipe = async (
+  recipeId: string,
+  isApiRecipe: boolean
+) => {
   const response = await axiosWithCredentials.get(
-    `${REVIEWS_API}/api/${recipeId}`
-  );
-  return response.data;
-};
-export const getAllReviewsForLocalRecipe = async (recipeId: string) => {
-  const response = await axiosWithCredentials.get(
-    `${REVIEWS_API}/local/${recipeId}`
+    `${REVIEWS_API}/${isApiRecipe ? "api" : "local"}/${recipeId}`
   );
   return response.data;
 };
@@ -38,8 +35,13 @@ export const createReview = async (review: Review) => {
   );
   return response.data;
 };
-export const getReviewsForSomeRecipes = (recipeIds: string[]) => {
-  return Promise.all(recipeIds.map((id) => getAllReviewsForApiRecipe(id)));
+export const getReviewsForSomeRecipes = (
+  recipeIds: string[],
+  isApiRecipe: boolean
+) => {
+  return Promise.all(
+    recipeIds.map((id) => getAllReviewsForRecipe(id, isApiRecipe))
+  );
 };
 export const deleteReview = async (reviewId: string) => {
   const response = await axiosWithCredentials.put(

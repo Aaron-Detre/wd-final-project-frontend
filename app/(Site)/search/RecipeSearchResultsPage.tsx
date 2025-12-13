@@ -23,7 +23,7 @@ export default function RecipeSearchResultsPage() {
 
   const fetchReviews = async () => {
     const ids = recipes.map((recipe) => recipe.idMeal);
-    const reviews = await reviewClient.getReviewsForSomeRecipes(ids);
+    const reviews = await reviewClient.getReviewsForSomeRecipes(ids, true);
     setApiRecipeReviews(reviews);
   };
   useEffect(() => {
@@ -54,7 +54,7 @@ export default function RecipeSearchResultsPage() {
               className="wdf-search-result wdf-border-light shadow"
             >
               <div className="wdf-info-card wdf-vertical">
-                <Link href={`/details/${recipe.idMeal}/api?fromSearch=true`}>
+                <Link href={`/details/${recipe.idMeal}/api`}>
                   <div className="wdf-info-card-image">
                     <Image
                       src={recipe.strMealThumb}
@@ -64,9 +64,7 @@ export default function RecipeSearchResultsPage() {
                 </Link>
                 <div className="wdf-info-card-body">
                   <div className="wdf-info-card-body-header">
-                    <Link
-                      href={`/details/${recipe.idMeal}/api?fromSearch=true`}
-                    >
+                    <Link href={`/details/${recipe.idMeal}/api`}>
                       <span className="wdf-info-card-title">
                         {recipe.strMeal}
                       </span>

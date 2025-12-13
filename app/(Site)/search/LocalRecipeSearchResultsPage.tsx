@@ -23,7 +23,7 @@ export default function LocalRecipeSearchResultsPage() {
 
   const fetchReviews = async () => {
     const ids = recipes.map((recipe) => recipe._id);
-    const reviews = await reviewClient.getReviewsForSomeRecipes(ids);
+    const reviews = await reviewClient.getReviewsForSomeRecipes(ids, false);
     setLocalRecipeReviews(reviews);
   };
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function LocalRecipeSearchResultsPage() {
               className="wdf-search-result wdf-border-light shadow"
             >
               <div className="wdf-info-card wdf-vertical">
-                <Link href={`/details/${recipe._id}/local?fromSearch=true`}>
+                <Link href={`/details/${recipe._id}/local`}>
                   <div className="wdf-info-card-image">
                     <Image
                       src={recipe.img ?? "/images/plate.svg"}
@@ -65,7 +65,7 @@ export default function LocalRecipeSearchResultsPage() {
                 </Link>
                 <div className="wdf-info-card-body">
                   <div className="wdf-info-card-body-header ">
-                    <Link href={`/details/${recipe._id}/local?fromSearch=true`}>
+                    <Link href={`/details/${recipe._id}/local`}>
                       <span>{recipe.recipeTitle}</span>
                     </Link>
                     <FlexGap />
