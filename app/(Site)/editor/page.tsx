@@ -54,7 +54,7 @@ export default function Editor() {
 
   const fetchRecipe = async () => {
     if ((localRecipeId || apiRecipeId) && !(localRecipeId && apiRecipeId)) {
-      const recipeIngredients: Ingredient[] = [];
+      const recipeIngredients: any = [];
       const recipeInstructions: InstructionWithId[] = [];
       if (localRecipeId) {
         const localRecipe = await localRecipeClient.getRecipeById(
@@ -62,9 +62,19 @@ export default function Editor() {
         );
         setRecipeTitle(localRecipe.recipeTitle);
         if (localRecipe.img) setImage(localRecipe.img);
-        localRecipe.ingredients?.forEach((ingredient: Ingredient) =>
-          recipeIngredients.push({ ...ingredient, id: uuidv4() })
-        );
+        setScalable(localRecipe.scalable);
+        if (localRecipe.scalable) {
+          localRecipe.scalableIngredients?.forEach(
+            (ingredient: ScalableIngredient) =>
+              recipeIngredients.push({ ...ingredient, id: uuidv4() })
+          );
+          setScalableIngredients(recipeIngredients);
+        } else {
+          localRecipe.ingredients?.forEach((ingredient: Ingredient) =>
+            recipeIngredients.push({ ...ingredient, id: uuidv4() })
+          );
+          setIngredients(recipeIngredients);
+        }
         localRecipe.instructions?.forEach((instruction: string) =>
           recipeInstructions.push({ id: uuidv4(), instruction: instruction })
         );
@@ -83,6 +93,7 @@ export default function Editor() {
             });
           }
         }
+        setIngredients(recipeIngredients);
         const matchesStepPattern = (str: string) => /^step \d+$/.test(str);
         apiRecipe.strInstructions
           .split("\r\n")
@@ -100,7 +111,6 @@ export default function Editor() {
               }) //TODO: duplication
           );
       }
-      setIngredients(recipeIngredients);
       setInstructions(recipeInstructions);
     }
   };
