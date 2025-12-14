@@ -186,7 +186,7 @@ export default function IngredientsEditor({
           scalableIngredients.map((ingredient, index) => (
             <Card
               key={ingredient.id}
-              className={index === ingredients.length - 1 ? "" : "mb-3"}
+              className={index === scalableIngredients.length - 1 ? "" : "mb-3"}
             >
               <Card.Header className="d-flex align-items-center pb-1">
                 <Card.Title>Ingredient {index + 1}</Card.Title>

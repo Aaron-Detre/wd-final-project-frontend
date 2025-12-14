@@ -33,7 +33,12 @@ export default function IngredientsCard({
   const ingredientsWithIds = ingredients.map(addId);
   const [scale, setScale] = useState(1);
   const scaleChanges = (e: any) => setScale(e.target.value);
-  const scaleIngredient = (amount: number) => (amount * scale).toFixed(2);
+  const scaleIngredient = (amount: number) => {
+    const scaledNum = amount * scale;
+    let scaledStr = scaledNum.toString();
+    if (scaledStr.includes(".")) scaledStr = scaledNum.toFixed(2);
+    return scaledStr;
+  };
 
   return (
     <Card className="wdf-details-ingredients shadow">
