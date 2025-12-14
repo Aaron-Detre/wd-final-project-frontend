@@ -12,19 +12,21 @@ import {
 } from "react-bootstrap";
 import {
   Ingredient,
-  IngredientWithId,
+  // IngredientWithId,
   InstructionWithId,
+  ScalableIngredient,
 } from "../UtilClasses/Types";
 import { useEffect, useState } from "react";
-import { FaTrashAlt } from "react-icons/fa";
 import * as recipeClient from "../Clients/recipeClient";
 import * as localRecipeClient from "../Clients/localRecipeClient";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter, useSearchParams } from "next/navigation";
-import FlexGap from "../UtilClasses/FlexGap";
 import { setTitle } from "../reducer";
+import IngredientsEditor from "./IngredientsEditor";
+import FlexGap from "../UtilClasses/FlexGap";
+import { FaTrashAlt } from "react-icons/fa";
 
 export default function Editor() {
   const dispatch = useDispatch();
@@ -35,9 +37,13 @@ export default function Editor() {
   const router = useRouter();
   const { currentUser } = useSelector((state: RootState) => state.account);
   const [recipeTitle, setRecipeTitle] = useState("");
-  const [ingredients, setIngredients] = useState<IngredientWithId[]>([
+  const [ingredients, setIngredients] = useState<Ingredient[]>([
     { id: uuidv4(), ingredient: "", measure: "" },
   ]);
+  const [scalableIngredients, setScalableIngredients] = useState<
+    ScalableIngredient[]
+  >([]);
+  const [scalable, setScalable] = useState(false);
   const [instructions, setInstructions] = useState<InstructionWithId[]>([
     { id: uuidv4(), instruction: "" },
   ]);
@@ -48,7 +54,7 @@ export default function Editor() {
 
   const fetchRecipe = async () => {
     if ((localRecipeId || apiRecipeId) && !(localRecipeId && apiRecipeId)) {
-      const recipeIngredients: IngredientWithId[] = [];
+      const recipeIngredients: Ingredient[] = [];
       const recipeInstructions: InstructionWithId[] = [];
       if (localRecipeId) {
         const localRecipe = await localRecipeClient.getRecipeById(
@@ -104,36 +110,6 @@ export default function Editor() {
 
   const titleChanges = (e: any) => setRecipeTitle(e.target.value);
   const imageChanges = (e: any) => setImage(e.target.value);
-  const ingredientChanges = (e: any, ingredientIndex: number) =>
-    setIngredients(
-      ingredients.map((ingredient: IngredientWithId, index) => {
-        if (ingredientIndex === index) {
-          return { ...ingredient, ingredient: e.target.value };
-        } else {
-          return ingredient;
-        }
-      })
-    );
-  const measurementChanges = (e: any, measurementIndex: number) =>
-    setIngredients(
-      ingredients.map((ingredient: IngredientWithId, index) => {
-        if (measurementIndex === index) {
-          return { ...ingredient, measure: e.target.value };
-        } else {
-          return ingredient;
-        }
-      })
-    );
-  const addNewIngredient = () =>
-    setIngredients([
-      ...ingredients,
-      { id: uuidv4(), ingredient: "", measure: "" },
-    ]);
-  const deleteIngredient = (ingredientIndex: number) => {
-    setIngredients((prevIngredients) =>
-      prevIngredients.filter((ingredient, index) => ingredientIndex !== index)
-    );
-  };
 
   const instructionChanges = (e: any, instructionIndex: number) => {
     const updatedInstructions = instructions.map(
@@ -176,6 +152,14 @@ export default function Editor() {
             measure: ingredient.measure,
           };
         }),
+        scalableIngredients: scalableIngredients.map((ingredient) => {
+          return {
+            ingredient: ingredient.ingredient,
+            amount: ingredient.amount,
+            unit: ingredient.unit,
+          };
+        }),
+        scalable: scalable,
         instructions: instructions.map(
           (instruction) => instruction.instruction
         ),
@@ -224,76 +208,33 @@ export default function Editor() {
               </Card.Body>
             </Card>
           </FormGroup>
+          {/* <FormGroup controlId="wdf-editor-serves" className="mt-3">
+            <Card>
+              <Card.Body className="d-block d-md-flex align-items-center gap-3">
+                <FormLabel className="mb-0">
+                  <Card.Title>Serves</Card.Title>
+                </FormLabel>
+                <FormControl
+                  type="number"
+                  onChange={servesChanges}
+                  placeholder="How many people does this recipe serve"
+                  value={serves}
+                />
+              </Card.Body>
+            </Card>
+
+          </FormGroup> */}
           <Row>
             <Col lg={6} className="mt-3">
               <div className="wdf-editor-ingredients">
-                <Card>
-                  <Card.Header className="d-flex align-items-baseline mt-1">
-                    <Card.Title>
-                      <FormLabel>Ingredients</FormLabel>
-                    </Card.Title>
-                    <FlexGap />
-                    <Button onClick={addNewIngredient} className="ms-2">
-                      +Ingredient
-                    </Button>
-                  </Card.Header>
-                  <Card.Body>
-                    {ingredients.map((ingredient, index) => (
-                      <Card
-                        key={ingredient.id}
-                        className={
-                          index === ingredients.length - 1 ? "" : "mb-3"
-                        }
-                      >
-                        <Card.Header className="d-flex align-items-center pb-1">
-                          <Card.Title>Ingredient {index + 1}</Card.Title>
-                          <FlexGap />
-                          <FaTrashAlt
-                            className="wdf-cursor-pointer"
-                            onClick={() => deleteIngredient(index)}
-                          />
-                        </Card.Header>
-                        <Card.Body className="pt-2">
-                          <Row>
-                            <Col xl={6}>
-                              <FormGroup
-                                controlId={`wdf-editor-ingredient-${index}`}
-                              >
-                                <FormLabel>Name</FormLabel>
-                                <FormControl
-                                  type="text"
-                                  placeholder="Ingredient Name"
-                                  onChange={(e: any) =>
-                                    ingredientChanges(e, index)
-                                  }
-                                  required
-                                  value={ingredient.ingredient}
-                                />
-                              </FormGroup>
-                            </Col>
-                            <Col xl={6}>
-                              <FormGroup
-                                // className="mt-2" TODO: media
-                                controlId={`wdf-editor-measure-${index}`}
-                              >
-                                <FormLabel>Measurement</FormLabel>
-                                <FormControl
-                                  type="text"
-                                  placeholder="Ingredient Measurement"
-                                  onChange={(e: any) =>
-                                    measurementChanges(e, index)
-                                  }
-                                  required
-                                  value={ingredient.measure}
-                                />
-                              </FormGroup>
-                            </Col>
-                          </Row>
-                        </Card.Body>
-                      </Card>
-                    ))}
-                  </Card.Body>
-                </Card>
+                <IngredientsEditor
+                  scalable={scalable}
+                  setScalable={setScalable}
+                  ingredients={ingredients}
+                  setIngredients={setIngredients}
+                  scalableIngredients={scalableIngredients}
+                  setScalableIngredients={setScalableIngredients}
+                />
               </div>
             </Col>
             <Col lg={6} className="mt-3">

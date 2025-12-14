@@ -1,37 +1,77 @@
+"use client";
 import {
   Card,
   CardBody,
   CardHeader,
+  FormControl,
+  FormGroup,
+  FormLabel,
   ListGroup,
   ListGroupItem,
 } from "react-bootstrap";
-import { Ingredient, IngredientWithId } from "../../UtilClasses/Types";
+import {
+  Ingredient,
+  IngredientWithId,
+  ScalableIngredient,
+} from "../../UtilClasses/Types";
 import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
+import FlexGap from "../../UtilClasses/FlexGap";
 
 export default function IngredientsCard({
   ingredients,
+  scalable,
 }: {
-  ingredients: Ingredient[];
+  ingredients: Ingredient[] | ScalableIngredient[];
+  scalable: boolean;
 }) {
-  const addId = (ingredient: Ingredient) => {
+  const addId = (
+    ingredient: Ingredient | ScalableIngredient
+  ): Ingredient | ScalableIngredient => {
     return { ...ingredient, id: uuidv4() };
   };
-  const ingredientsWithIds: IngredientWithId[] = ingredients.map(addId);
+  const ingredientsWithIds = ingredients.map(addId);
+  const [scale, setScale] = useState(1);
+  const scaleChanges = (e: any) => setScale(e.target.value);
+  const scaleIngredient = (amount: number) => (amount * scale).toFixed(2);
 
   return (
     <Card className="wdf-details-ingredients shadow">
-      <CardHeader>Ingredients</CardHeader>
+      <CardHeader className="d-flex align-items-baseline">
+        Ingredients
+        <FlexGap />
+        {scalable && (
+          <FormGroup
+            controlId="wdf-ingredients-scale"
+            className="d-flex align-items-baseline gap-2 ms-4"
+          >
+            <FormLabel>Scale</FormLabel>
+            <FormControl type="number" value={scale} onChange={scaleChanges} />
+          </FormGroup>
+        )}
+      </CardHeader>
       <CardBody>
         <ListGroup className="wdf-details-ingredients-list">
           {ingredients.length > 0 ? (
-            ingredientsWithIds.map((ingredientWithId: IngredientWithId) => (
-              <ListGroupItem key={ingredientWithId.id}>
-                <span>{ingredientWithId.ingredient}</span>
-                {ingredientWithId.measure && (
-                  <span>{" - " + ingredientWithId.measure}</span>
-                )}
-              </ListGroupItem>
-            ))
+            ingredientsWithIds.map((ingredient: any) =>
+              scalable ? (
+                <ListGroupItem key={ingredient.id}>
+                  <span>{ingredient.ingredient}</span>
+                  {(ingredient.unit || ingredient.amount) && (
+                    <span>{` - ${scaleIngredient(ingredient.amount)} ${
+                      ingredient.unit
+                    }`}</span>
+                  )}
+                </ListGroupItem>
+              ) : (
+                <ListGroupItem key={ingredient.id}>
+                  <span>{ingredient.ingredient}</span>
+                  {ingredient.measure && (
+                    <span>{" - " + ingredient.measure}</span>
+                  )}
+                </ListGroupItem>
+              )
+            )
           ) : (
             <span>No ingredients...</span>
           )}

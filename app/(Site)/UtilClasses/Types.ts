@@ -15,11 +15,20 @@ export type Recipe = {
   recipeAuthor: { _id: string; username: string };
   datePosted: Date;
   ingredients: Ingredient[];
+  scalableIngredients: ScalableIngredient[];
+  scalable: boolean;
   instructions: string[];
 };
 export type Ingredient = {
+  id?: string;
   ingredient: string;
   measure: string;
+};
+export type ScalableIngredient = {
+  id?: string;
+  ingredient: string;
+  amount: number;
+  unit: string;
 };
 export type Review = {
   _id: string;

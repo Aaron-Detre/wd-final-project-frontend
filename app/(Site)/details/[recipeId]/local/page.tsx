@@ -29,7 +29,11 @@ export default function ApiRecipeDetails() {
   const { currentUser } = useSelector((state: RootState) => state.account);
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState<any>(null);
+  const [scalable, setScalable] = useState(false);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [scalableIngredients, setScalableIngredients] = useState<Ingredient[]>(
+    []
+  );
   const [instructions, setInstructions] = useState<string[]>([]);
   const [hasImage, setHasImage] = useState(true);
 
@@ -39,8 +43,10 @@ export default function ApiRecipeDetails() {
     );
     setRecipe(recipeDetails);
     setIngredients(recipeDetails.ingredients);
+    setScalableIngredients(recipeDetails.scalableIngredients);
     setInstructions(recipeDetails.instructions);
     setHasImage(recipeDetails.img !== undefined);
+    setScalable(recipeDetails.scalable);
   };
   useEffect(() => {
     fetchRecipeDetails();
@@ -138,7 +144,10 @@ export default function ApiRecipeDetails() {
           <div className="wdf-details-body">
             <Row>
               <Col xl={5}>
-                <IngredientsCard ingredients={ingredients} />
+                <IngredientsCard
+                  ingredients={scalable ? scalableIngredients : ingredients}
+                  scalable={scalable}
+                />
               </Col>
               <Col xl={7}>
                 <InstructionsCard instructions={instructions} />
