@@ -129,7 +129,7 @@ export default function ApiRecipeDetails() {
           <div className="wdf-details-body">
             <Row>
               <Col xl={5}>
-                <IngredientsCard ingredients={ingredients} />
+                <IngredientsCard ingredients={ingredients} scalable={false} />
               </Col>
               <Col xl={7}>
                 <InstructionsCard instructions={instructions} />
